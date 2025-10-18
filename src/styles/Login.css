@@ -1,0 +1,81 @@
+.login-container {
+  max-width: 400px;
+  margin: 30px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.login-groupbox {
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  padding: 15px;
+}
+
+.login-legend {
+  font-weight: bold;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.login-form > div {
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.login-label {
+  display: block;
+}
+
+.login-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
+
+.login-input.error {
+  border-color: red;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.error-message {
+  color: red;
+  margin-top: 4px;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.auth-message {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.auth-message.success {
+  color: green;
+}
+
+.auth-message.error {
+  color: red;
+}
+
+.signup-text {
+  margin-top:
+}
