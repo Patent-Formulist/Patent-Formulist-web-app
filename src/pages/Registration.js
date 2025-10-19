@@ -8,7 +8,7 @@ function Registration() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -31,7 +31,25 @@ function Registration() {
 
     setError('');
     setMessage('Регистрация прошла успешно!');
-    // серверная логика регистрации
+    try {
+        const response = await fetch('http://localhost:8000/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          setMessage(data.message || "Регистрация прошла успешно!");
+          setError('');
+        } else {
+          setError(data.detail || "Ошибка регистрации");
+          setMessage('');
+        }
+      } catch {
+        setError("Ошибка сети");
+        setMessage('');
+      }
   };
 
   return (

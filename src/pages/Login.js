@@ -15,15 +15,24 @@ function Login() {
     setErrorMessage('');
     setSuccessMessage('');
 
-    // мок логина
-    setTimeout(() => {
-      if (email === 'user@example.com' && password === 'password123') {
-        setSuccessMessage('Вход выполнен успешно');
+    try {
+      const response = await fetch('http://localhost:8000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccessMessage(data.message, "Вход выполнен успешно");
       } else {
-        setErrorMessage('Неверный email или пароль');
+        setErrorMessage(data.detail, "Неверный email или пароль");
       }
-      setLoading(false);
-    }, 1000);
+    } catch (error) {
+      setErrorMessage("Ошибка сети");
+    }
+    setLoading(false);
   };
 
   return (
@@ -45,10 +54,10 @@ function Login() {
           required
         />
         <p className="register-prompt">
-            Не зарегистрированы?{' '}
-            <Link to="/registration" className="register-link">
-                Зарегистрируйтесь
-            </Link>
+          Не зарегистрированы?{' '}
+          <Link to="/registration" className="register-link">
+            Зарегистрируйтесь
+          </Link>
         </p>
         <button type="submit" className="auth-btn" disabled={loading}>
           {loading ? 'Загрузка...' : 'Войти'}
