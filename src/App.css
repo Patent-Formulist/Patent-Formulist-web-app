@@ -12,13 +12,6 @@
   padding: 20px 15px;
   max-width: 1200px;
   margin: 0 auto;
-  width: 100%;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
 }
 
 a {
@@ -27,7 +20,8 @@ a {
   transition: color 0.3s ease;
 }
 
-a:hover, a:focus {
+a:hover,
+a:focus {
   color: #005a9e;
   outline: none;
 }

@@ -1,4 +1,4 @@
-.register-page {
+.auth-page {
   max-width: 400px;
   margin: 60px auto;
   padding: 20px;
@@ -8,37 +8,45 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.register-page h1 {
+@media (max-width: 768px) {
+  .auth-page {
+    max-width: 90vw;
+    margin: 20px auto;
+  }
+}
+
+.auth-page h1 {
   text-align: center;
   margin-bottom: 20px;
   color: #333;
 }
 
-.register-form {
+.auth-form {
   display: flex;
   flex-direction: column;
 }
 
-.register-form label {
+.auth-form label {
   margin-bottom: 5px;
   font-weight: 600;
   color: #333;
 }
 
-.register-form input {
+.auth-form input {
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 4px;
   border: 1px solid #ccc;
   font-size: 1rem;
+  transition: border-color 0.3s ease;
 }
 
-.register-form input:focus {
+.auth-form input:focus {
   border-color: #0078d7;
   outline: none;
 }
 
-.register-btn {
+.auth-btn {
   padding: 10px 15px;
   background-color: #0078d7;
   border: none;
@@ -50,15 +58,20 @@
   transition: background-color 0.3s ease;
 }
 
-.register-btn:hover,
-.register-btn:focus {
+.auth-btn:hover,
+.auth-btn:focus {
   background-color: #005a9e;
   outline: none;
 }
 
-.register-message {
+.auth-message {
   margin-top: 10px;
-  color: green;
   font-weight: 600;
-  text-align: center;
+  color: green;
+}
+
+.auth-error {
+  margin-top: 10px;
+  font-weight: 600;
+  color: red;
 }

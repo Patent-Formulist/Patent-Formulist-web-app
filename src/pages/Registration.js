@@ -1,61 +1,69 @@
 import React, { useState } from 'react';
-import '../styles/Registration.css';
+import '../styles/Auth.css';
 
 function Registration() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
-      setMessage('Пароли не совпадают');
+      setError('Пароли не совпадают');
+      setMessage('');
       return;
     }
-    // логика регистрации (фейковая)
+
+    if (password.length < 8) {
+      setError('Пароль должен быть не менее 8 символов');
+      setMessage('');
+      return;
+    }
+
+    if (!/\d/.test(password) || !/[A-Z]/.test(password)) {
+      setError('Пароль должен содержать хотя бы одну цифру и заглавную букву');
+      setMessage('');
+      return;
+    }
+
+    setError('');
     setMessage('Регистрация прошла успешно!');
+    // серверная логика регистрации
   };
 
   return (
-    <main className="register-page">
+    <div className="auth-page">
       <h1>Регистрация</h1>
-      <form onSubmit={handleSubmit} className="register-form">
-        <label htmlFor="email">Электронная почта</label>
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <label>Электронная почта</label>
         <input
           type="email"
-          id="email"
-          placeholder="Введите email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)}
           required
         />
-
-        <label htmlFor="password">Пароль</label>
+        <label>Пароль</label>
         <input
           type="password"
-          id="password"
-          placeholder="Введите пароль"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value)}
           required
         />
-
-        <label htmlFor="confirmPassword">Подтвердите пароль</label>
+        <label>Подтвердите пароль</label>
         <input
           type="password"
-          id="confirmPassword"
-          placeholder="Подтвердите пароль"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          onChange={e => setConfirmPassword(e.target.value)}
           required
         />
-
-        <button type="submit" className="register-btn">Зарегистрироваться</button>
+        <button type="submit" className="auth-btn">Зарегистрироваться</button>
       </form>
-
-      {message && <p className="register-message">{message}</p>}
-    </main>
+      {message && <div className="auth-message">{message}</div>}
+      {error && <div className="auth-error">{error}</div>}
+    </div>
   );
 }
 
