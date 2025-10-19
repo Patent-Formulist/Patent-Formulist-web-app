@@ -1,40 +1,37 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/Header.css';
 import logo from '../resources/logo.svg';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
 
 function Header() {
-  
   const [menuOpen, setMenuOpen] = useState(false);
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
-    <header>
-      <nav className="nav-bar">
-        <Link to="/" aria-label="Главная" className="logo-link">
-          <img src={logo} alt="Логотип" className="logo" />
+    <header className="header">
+      <div className="header-left">
+        <Link to="/" onClick={closeMenu}>
+          <img src={logo} alt="Logo" className="logo" />
         </Link>
-        <div 
-          className={`nav-text-links ${menuOpen ? 'open' : ''}`}
-          onClick={() => setMenuOpen(false)} 
-        >
-          <Link to="/about" className="nav-link">О нас</Link>
-          <Link to="/faq" className="nav-link">FAQ</Link>
-          <Link to="/contacts" className="nav-link">Контакты</Link>
-        </div>
-        <div className="login-link">
-          <Link to="/login" className="nav-link">Войти</Link>
-        </div>
-        <div 
-          className="menu-toggle" 
-          onClick={() => setMenuOpen(!menuOpen)} 
-          aria-label="Toggle menu"
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => { if(e.key === 'Enter') setMenuOpen(!menuOpen); }}
-        >
-          &#9776;
-        </div>
+      </div>
+
+      <nav className={`header-center ${menuOpen ? 'open' : ''}`} aria-label="Главное меню">
+        <Link to="/about" onClick={closeMenu}>О нас</Link>
+        <Link to="/faq" onClick={closeMenu}>FAQ</Link>
+        <Link to="/contacts" onClick={closeMenu}>Контакты</Link>
+        <Link to="/login" className="login-btn mobile-login" onClick={closeMenu}>Войти</Link>
       </nav>
+
+      <div className="header-right">
+        <Link to="/login" className="login-btn desktop-login">Войти</Link>
+        <button className="burger-menu" aria-label="Меню" onClick={toggleMenu}>
+          <span className="burger-bar"></span>
+          <span className="burger-bar"></span>
+          <span className="burger-bar"></span>
+        </button>
+      </div>
     </header>
   );
 }

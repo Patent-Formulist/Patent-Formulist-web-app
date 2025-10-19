@@ -1,4 +1,4 @@
-.login-page {
+.register-page {
   max-width: 400px;
   margin: 60px auto;
   padding: 20px;
@@ -8,24 +8,24 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.login-page h1 {
+.register-page h1 {
   text-align: center;
   margin-bottom: 20px;
   color: #333;
 }
 
-.login-form {
+.register-form {
   display: flex;
   flex-direction: column;
 }
 
-.login-form label {
+.register-form label {
   margin-bottom: 5px;
   font-weight: 600;
   color: #333;
 }
 
-.login-form input {
+.register-form input {
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 4px;
@@ -33,12 +33,12 @@
   font-size: 1rem;
 }
 
-.login-form input:focus {
+.register-form input:focus {
   border-color: #0078d7;
   outline: none;
 }
 
-.login-btn {
+.register-btn {
   padding: 10px 15px;
   background-color: #0078d7;
   border: none;
@@ -50,41 +50,15 @@
   transition: background-color 0.3s ease;
 }
 
-.login-btn:hover,
-.login-btn:focus {
+.register-btn:hover,
+.register-btn:focus {
   background-color: #005a9e;
   outline: none;
 }
 
-.register-prompt {
-  margin-top: 15px;
-  text-align: center;
-  font-size: 0.95rem;
-  color: #555;
-}
-
-.register-link {
-  color: #0078d7;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.register-link:hover,
-.register-link:focus {
-  text-decoration: underline;
-  outline: none;
-}
-
-.login-error {
-  color: #d93025;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.login-success {
-  color: #188038;
-  font-weight: 600;
-  text-align: center;
+.register-message {
   margin-top: 10px;
+  color: green;
+  font-weight: 600;
+  text-align: center;
 }

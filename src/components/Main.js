@@ -1,21 +1,11 @@
-import { Routes, Route } from 'react-router-dom';
-import '../styles/Main.css'
-import Home from './Home';
-import About from './About';
-import FAQ from './FAQ';
-import Contacts from './Contacts';
-import Login from './Login';
+import React from 'react';
+import '../styles/Main.css';
 
 function Main() {
   return (
-    <main>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/contacts" element={<Contacts />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
+    <main className="main-page">
+      <h1>Добро пожаловать!</h1>
+      <p>Здесь будет ознакомительная информация о проекте.</p>
     </main>
   );
 }

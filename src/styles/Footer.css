@@ -1,4 +1,6 @@
-footer {
-  background: lightgray;
-  padding: 10px;
+.footer {
+  background: #222;
+  color: white;
+  padding: 15px;
+  text-align: center;
 }
