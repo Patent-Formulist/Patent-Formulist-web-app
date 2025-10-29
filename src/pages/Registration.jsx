@@ -32,7 +32,7 @@ function Registration() {
     setError('');
     setMessage('Регистрация прошла успешно!');
     try {
-        const response = await fetch('http://localhost:8000/api/register', {
+        const response = await fetch('/api/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
