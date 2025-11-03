@@ -10,30 +10,37 @@ function Login() {
   const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrorMessage('');
-    setSuccessMessage('');
+  e.preventDefault();
+  setLoading(true);
+  setErrorMessage('');
+  setSuccessMessage('');
 
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    const params = new URLSearchParams();
+    params.append('username', email);
+    params.append('password', password);
 
-      const data = await response.json();
+    const response = await fetch('http://localhost:8000/auth/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+    });
 
-      if (response.ok) {
-        setSuccessMessage(data.message, "Вход выполнен успешно");
-      } else {
-        setErrorMessage(data.detail, "Неверный email или пароль");
-      }
-    } catch (error) {
-      setErrorMessage("Ошибка сети");
+    const data = await response.json().catch(() => ({}));
+
+    if (response.ok) {
+      setSuccessMessage('Вход выполнен успешно');
+      setErrorMessage('');
+    } else {
+      setErrorMessage(data.detail);
+      setSuccessMessage('');
     }
-    setLoading(false);
-  };
+  } catch {
+    setErrorMessage('Ошибка сети');
+    setSuccessMessage('');
+  }
+  setLoading(false);
+};
 
   return (
     <div className="auth-page">

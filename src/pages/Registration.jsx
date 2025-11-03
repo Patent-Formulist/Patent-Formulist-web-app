@@ -9,48 +9,50 @@ function Registration() {
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (password !== confirmPassword) {
-      setError('Пароли не совпадают');
+  if (password !== confirmPassword) {
+    setError('Пароли не совпадают');
+    setMessage('');
+    return;
+  }
+
+  if (password.length < 8) {
+    setError('Пароль должен быть не менее 8 символов');
+    setMessage('');
+    return;
+  }
+
+  if (!/\d/.test(password) || !/[A-Z]/.test(password)) {
+    setError('Пароль должен содержать хотя бы одну цифру и заглавную букву');
+    setMessage('');
+    return;
+  }
+
+  setError('');
+  setMessage('');
+
+  try {
+    const response = await fetch('http://localhost:8000/auth/', {  
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
+      const data = await response.json().catch(() => ({})); 
+      setMessage(data.message);
+      setError('');
+    } else {
+      const errorData = await response.json();
+      setError(errorData.detail);
       setMessage('');
-      return;
     }
-
-    if (password.length < 8) {
-      setError('Пароль должен быть не менее 8 символов');
-      setMessage('');
-      return;
-    }
-
-    if (!/\d/.test(password) || !/[A-Z]/.test(password)) {
-      setError('Пароль должен содержать хотя бы одну цифру и заглавную букву');
-      setMessage('');
-      return;
-    }
-
-    setError('');
-    setMessage('Регистрация прошла успешно!');
-    try {
-        const response = await fetch('/api/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
-        const data = await response.json();
-
-        if (response.ok) {
-          setMessage(data.message || "Регистрация прошла успешно!");
-          setError('');
-        } else {
-          setError(data.detail || "Ошибка регистрации");
-          setMessage('');
-        }
-      } catch {
-        setError("Ошибка сети");
-        setMessage('');
-      }
-  };
+  } catch {
+    setError('Ошибка сети');
+    setMessage('');
+  }
+};
 
   return (
     <div className="auth-page">
