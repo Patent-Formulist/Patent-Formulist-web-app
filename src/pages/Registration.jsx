@@ -8,81 +8,111 @@ function Registration() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  const isEmailBasic = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (password !== confirmPassword) {
-    setError('Пароли не совпадают');
+    if (!isEmailBasic(email)) {
+      setError('Введите корректный e‑mail (например: ivan@site.ru).');
+      setMessage('');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Пароли не совпадают');
+      setMessage('');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError('Пароль должен быть не менее 8 символов');
+      setMessage('');
+      return;
+    }
+
+    if (!/\d/.test(password) || !/[A-Z]/.test(password)) {
+      setError('Пароль должен содержать хотя бы одну цифру и заглавную букву');
+      setMessage('');
+      return;
+    }
+
+    setError('');
     setMessage('');
-    return;
-  }
 
-  if (password.length < 8) {
-    setError('Пароль должен быть не менее 8 символов');
-    setMessage('');
-    return;
-  }
+    try {
+      const res = await fetch('http://localhost:8000/auth/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-  if (!/\d/.test(password) || !/[A-Z]/.test(password)) {
-    setError('Пароль должен содержать хотя бы одну цифру и заглавную букву');
-    setMessage('');
-    return;
-  }
+      let data = null;
+      try { data = await res.json(); } catch { data = null; }
 
-  setError('');
-  setMessage('');
+      if (res.ok) {
+        setMessage((data && data.message) || 'Регистрация прошла успешно!');
+        setError('');
+      } else {
+        const detail = data && (data.detail || data.errors);
+        let msg = 'Ошибка регистрации';
 
-  try {
-    const response = await fetch('http://localhost:8000/auth/', {  
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+        if (Array.isArray(detail)) {
+          const emailErr = detail.find(
+            (d) =>
+              (Array.isArray(d.loc) && d.loc.includes('email')) ||
+              (d.type && String(d.type).includes('email')) ||
+              (d.msg && String(d.msg).toLowerCase().includes('email'))
+          );
+          if (emailErr) {
+            msg = 'Введите корректный e‑mail (например: ivan@site.ru).';
+          } else {
+            msg = detail.map((d) => d.msg || d.type || 'Ошибка валидации').join(', ');
+          }
+        } else if (detail && typeof detail === 'object' && detail.email) {
+          msg = detail.email;
+        } else if (typeof detail === 'string') {
+          msg = detail;
+        }
 
-    if (response.ok) {
-      const data = await response.json().catch(() => ({})); 
-      setMessage(data.message);
-      setError('');
-    } else {
-      const errorData = await response.json();
-      setError(errorData.detail);
+        setError(msg);
+        setMessage('');
+      }
+    } catch {
+      setError('Ошибка сети');
       setMessage('');
     }
-  } catch {
-    setError('Ошибка сети');
-    setMessage('');
-  }
-};
+  };
 
   return (
     <div className="auth-page">
       <h1>Регистрация</h1>
-      <form className="auth-form" onSubmit={handleSubmit}>
+      <form className="auth-form" onSubmit={handleSubmit} noValidate>
         <label>Электронная почта</label>
         <input
           type="email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
         <label>Пароль</label>
         <input
           type="password"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
         <label>Подтвердите пароль</label>
         <input
           type="password"
           value={confirmPassword}
-          onChange={e => setConfirmPassword(e.target.value)}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           required
         />
         <button type="submit" className="auth-btn">Зарегистрироваться</button>
       </form>
-      {message && <div className="auth-message">{message}</div>}
-      {error && <div className="auth-error">{error}</div>}
+      <div className="auth-message" aria-live="polite">{message || '\u00A0'}</div>
+      <div className="auth-error" aria-live="polite">{error || '\u00A0'}</div>
     </div>
   );
 }
