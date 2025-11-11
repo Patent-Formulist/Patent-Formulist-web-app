@@ -1,34 +1,23 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom'
 
-import Main from './components/Main.jsx';
-import Home from './pages/Home.jsx';
-import About from './pages/About.jsx';
-import FAQ from './pages/FAQ.jsx';
-import Contacts from './pages/Contacts.jsx';
-import Login from './pages/Login.jsx';
-import Registration from './pages/Registration.jsx';
-import NotFound from './pages/NotFound.jsx';
-import MainLayout from './layouts/MainLayout.jsx';
-import CleanLayout from './layouts/CleanLayout.jsx';
+import WelcomeLayout from './layouts/WelcomeLayout'
 
-function App() {
+import Welcome from './pages/unauthorized/Welcome'
+import About from './pages/unauthorized/About'
+import FAQ from './pages/unauthorized/FAQ'
+import Contacts from './pages/unauthorized/Contacts'
+
+import './styles/App.css'
+
+export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<Main />} />
-        <Route path="home" element={<Home />} />
-        <Route path="about" element={<About />} />
-        <Route path="faq" element={<FAQ />} />
-        <Route path="contacts" element={<Contacts />} />
-      </Route>
-      <Route path="/" element={<CleanLayout />}>
-        <Route path="login" element={<Login />} />
-        <Route path="registration" element={<Registration />} />
-        <Route path="*" element={<NotFound />} />
-      </Route>
-    </Routes>
-  );
+      <Routes>
+        <Route element={<WelcomeLayout />}>
+          <Route index element={<Welcome />} />
+          <Route path="about" element={<About />} />
+          <Route path="faq" element={<FAQ />} />
+          <Route path="contacts" element={<Contacts />} />
+        </Route>
+      </Routes>
+  )
 }
-
-export default App;
