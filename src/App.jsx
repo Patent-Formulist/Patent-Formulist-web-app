@@ -2,10 +2,12 @@ import { Routes, Route } from 'react-router-dom'
 
 import WelcomeLayout from './layouts/WelcomeLayout'
 
-import Welcome from './pages/unauthorized/Welcome'
-import About from './pages/unauthorized/About'
-import FAQ from './pages/unauthorized/FAQ'
-import Contacts from './pages/unauthorized/Contacts'
+import Welcome from './pages/welcome_pages/Welcome'
+import About from './pages/welcome_pages/About'
+import FAQ from './pages/welcome_pages/FAQ'
+import Contacts from './pages/welcome_pages/Contacts'
+import LogIn from './pages/auth_pages/LogIn'
+import SignIn from './pages/auth_pages/SignIn'
 
 import './styles/App.css'
 
@@ -17,6 +19,8 @@ export default function App() {
           <Route path="about" element={<About />} />
           <Route path="faq" element={<FAQ />} />
           <Route path="contacts" element={<Contacts />} />
+          <Route path='login' element={<LogIn />} />
+          <Route path='signin' element={<SignIn />} />
         </Route>
       </Routes>
   )

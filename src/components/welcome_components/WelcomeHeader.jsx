@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../../resources/logo.svg'
 import funcsIcon from '../../resources/funcs.svg'
-import '../../styles/WelcomeHeader.css'
+import '../../styles/welcome_styles/WelcomeHeader.css'
 
 function WelcomeHeader() {
+
   const [menuOpen, setMenuOpen] = useState(false)
 
   const toggleMenu = () => setMenuOpen(!menuOpen)
@@ -21,11 +22,25 @@ function WelcomeHeader() {
           <Link to="/about" onClick={closeMenu}>О нас</Link>
           <Link to="/faq" onClick={closeMenu}>Частые вопросы</Link>
           <Link to="/contacts" onClick={closeMenu}>Контакты</Link>
+          
+          <div className="mobile-auth-buttons">
+            <Link to="/register" className="mobile-register-btn" onClick={closeMenu}>
+              Регистрация
+            </Link>
+            <Link to="/login" className="mobile-login-btn" onClick={closeMenu}>
+              Войти
+            </Link>
+          </div>
         </nav>
 
-        <Link to="/login" className="login-btn" onClick={closeMenu}>
-          Войти
-        </Link>
+        <div className="auth-buttons">
+          <Link to="/signin" className="register-btn" onClick={closeMenu}>
+            Регистрация
+          </Link>
+          <Link to="/login" className="login-btn" onClick={closeMenu}>
+            Войти
+          </Link>
+        </div>
 
         <button 
           className={`hamburger ${menuOpen ? 'open' : ''}`} 

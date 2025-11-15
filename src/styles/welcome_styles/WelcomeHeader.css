@@ -30,10 +30,10 @@
 .nav-links {
   display: flex;
   gap: 30px;
-  margin-left: 40px; /* Отступ от логотипа */
+  margin-left: 40px;
 }
 
-.nav-links a {
+.nav-links > a {
   color: rgba(0, 51, 102, 1);
   text-decoration: none;
   font-weight: 500;
@@ -41,11 +41,21 @@
   transition: opacity 0.3s ease;
 }
 
-.nav-links a:hover {
+.nav-links > a:hover {
   opacity: 0.7;
 }
 
-.login-btn {
+.mobile-auth-buttons {
+  display: none;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 15px;
+  margin-left: auto;
+}
+
+.register-btn {
   background: rgba(49, 100, 146, 1);
   color: white;
   padding: 10px 24px;
@@ -54,13 +64,30 @@
   font-weight: 500;
   transition: all 0.3s ease;
   display: inline-block;
-  margin-left: auto; /* Прижимает кнопку к правому краю */
 }
 
-.login-btn:hover {
+.register-btn:hover {
   background: rgba(39, 80, 116, 1);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.login-btn {
+  background: white;
+  color: rgba(49, 100, 146, 1);
+  padding: 10px 24px;
+  border: 2px solid rgba(49, 100, 146, 1);
+  border-radius: 18px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.login-btn:hover {
+  background: rgba(49, 100, 146, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .hamburger {
@@ -110,27 +137,51 @@
     right: 0;
   }
 
-  .login-btn {
+  .mobile-auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 51, 102, 0.1);
+  }
+
+  .mobile-register-btn {
+    background: rgba(49, 100, 146, 1);
+    color: white !important;
+    padding: 12px 24px;
+    border-radius: 18px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-register-btn:hover {
+    background: rgba(39, 80, 116, 1);
+  }
+
+  .mobile-login-btn {
+    background: white;
+    color: rgba(49, 100, 146, 1) !important;
+    padding: 12px 24px;
+    border: 2px solid rgba(49, 100, 146, 1);
+    border-radius: 18px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-login-btn:hover {
+    background: rgba(49, 100, 146, 0.1);
+  }
+
+  .auth-buttons {
     display: none;
   }
 
   .hamburger {
     display: flex;
-  }
-
-  .nav-links.open::after {
-    content: 'Войти';
-    background: rgba(49, 100, 146, 1);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 18px;
-    text-align: center;
-    margin-top: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .nav-links.open::after:hover {
-    background: rgba(39, 80, 116, 1);
   }
 }
