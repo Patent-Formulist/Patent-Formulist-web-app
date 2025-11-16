@@ -8,6 +8,7 @@ import FAQ from './pages/welcome_pages/FAQ'
 import Contacts from './pages/welcome_pages/Contacts'
 import LogIn from './pages/auth_pages/LogIn'
 import SignIn from './pages/auth_pages/SignIn'
+import NotFound from './pages/NotFound'
 
 import './styles/App.css'
 
@@ -22,6 +23,7 @@ export default function App() {
           <Route path='login' element={<LogIn />} />
           <Route path='signin' element={<SignIn />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
   )
 }
