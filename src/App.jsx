@@ -1,16 +1,16 @@
 import { Routes, Route } from 'react-router-dom'
 
-import WelcomeLayout from './layouts/WelcomeLayout'
+import WelcomeLayout from './features/welcome/layouts/WelcomeLayout'
 
-import Welcome from './pages/welcome_pages/Welcome'
-import About from './pages/welcome_pages/About'
-import FAQ from './pages/welcome_pages/FAQ'
-import Contacts from './pages/welcome_pages/Contacts'
-import LogIn from './pages/auth_pages/LogIn'
-import SignIn from './pages/auth_pages/SignIn'
-import NotFound from './pages/NotFound'
+import Welcome from './features/welcome/pages/Welcome'
+import About from './features/welcome/pages/About'
+import FAQ from './features/welcome/pages/FAQ'
+import Contacts from './features/welcome/pages/Contacts'
+import LogIn from './features/auth/pages/LogIn'
+import SignIn from './features/auth/pages/SignIn'
+import NotFound from './NotFound'
 
-import './styles/App.css'
+import './App.css'
 
 export default function App() {
   return (

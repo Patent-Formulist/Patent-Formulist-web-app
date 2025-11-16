@@ -1,4 +1,4 @@
-import FAQComp from "../../components/welcome_components/FAQComp"
+import FAQComp from "../components/FAQComp"
 
 function FAQ() {
   return (

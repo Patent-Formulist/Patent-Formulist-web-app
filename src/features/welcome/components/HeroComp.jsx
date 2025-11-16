@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-import "../../styles/welcome_styles/HeroComp.css"
+import "../styles/HeroComp.css"
 
 function HeroComp() {
     return(

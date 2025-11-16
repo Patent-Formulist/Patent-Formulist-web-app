@@ -1,4 +1,4 @@
-import AboutComp from "../../components/welcome_components/AboutComp"
+import AboutComp from "../components/AboutComp"
 
 function About() {
   return (

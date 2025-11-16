@@ -1,8 +1,9 @@
-import emailIcon from '../../resources/mail.svg'
-import vkIcon from '../../resources/message.svg'
-import telegramIcon from '../../resources/plane.svg'
-import simIcon from '../../resources/sim.svg'
-import '../../styles/welcome_styles/WelcomeFooter.css'
+import emailIcon from '../../../resources/mail.svg'
+import vkIcon from '../../../resources/message.svg'
+import telegramIcon from '../../../resources/plane.svg'
+import simIcon from '../../../resources/sim.svg'
+
+import '../styles/WelcomeFooter.css'
 
 function WelcomeFooter() {
   return (

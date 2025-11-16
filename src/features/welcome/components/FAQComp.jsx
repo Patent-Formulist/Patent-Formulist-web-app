@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import arrow from '../../resources/arrow.svg'
+import arrow from '../../../resources/arrow.svg'
 
-import "../../styles/welcome_styles/FAQComp.css"
+import "../styles/FAQComp.css"
 
 function FAQComp() {
 

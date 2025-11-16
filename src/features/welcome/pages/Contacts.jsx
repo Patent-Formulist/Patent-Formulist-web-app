@@ -1,4 +1,4 @@
-import ContactsComp from "../../components/welcome_components/ContactsComp"
+import ContactsComp from "../components/ContactsComp"
 
 function Contacts() {
   return (

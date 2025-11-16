@@ -1,9 +1,9 @@
-import emailIcon from '../../resources/mail.svg'
-import vkIcon from '../../resources/message.svg'
-import telegramIcon from '../../resources/plane.svg'
-import simIcon from '../../resources/sim.svg'
+import emailIcon from '../../../resources/mail.svg'
+import vkIcon from '../../../resources/message.svg'
+import telegramIcon from '../../../resources/plane.svg'
+import simIcon from '../../../resources/sim.svg'
 
-import "../../styles/welcome_styles/ContactsComp.css"
+import "../styles/ContactsComp.css"
 
 function ContactsComp() {
   return (

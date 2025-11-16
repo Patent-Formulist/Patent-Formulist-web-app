@@ -1,4 +1,4 @@
-import "../../styles/welcome_styles/AboutComp.css"
+import "../styles/AboutComp.css"
 
 function AboutComp() {
   return (

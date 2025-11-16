@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import "../styles/NotFound.css"; 
+import "./NotFound.css"; 
 
 function NotFound() {
   return (
@@ -16,4 +16,4 @@ function NotFound() {
   );
 }
 
-export default NotFound;
+export default NotFound

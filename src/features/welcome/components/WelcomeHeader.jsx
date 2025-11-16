@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import logo from '../../resources/logo.svg'
-import funcsIcon from '../../resources/funcs.svg'
-import '../../styles/welcome_styles/WelcomeHeader.css'
+import logo from '../../../resources/logo.svg'
+import funcsIcon from '../../../resources/funcs.svg'
+
+import '../styles/WelcomeHeader.css'
 
 function WelcomeHeader() {
 

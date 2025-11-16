@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom'
 
-import WelcomeHeader from '../components/welcome_components/WelcomeHeader'
-import WelcomeFooter from '../components/welcome_components/WelcomeFooter'
+import WelcomeHeader from '../components/WelcomeHeader'
+import WelcomeFooter from '../components/WelcomeFooter'
 
-import '../styles/welcome_styles/WelcomeLayout.css'
+import '../styles/WelcomeLayout.css'
 
 function WelcomeLayout() {
   return (
