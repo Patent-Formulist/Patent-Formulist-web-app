@@ -1,7 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
-import "../styles/Auth.css";
+import authService from '../../../services/api/authService'
+
+import "../styles/Auth.css"
 
 function SignIn() {
   const [email, setEmail] = useState('')
@@ -37,26 +39,12 @@ function SignIn() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/auth/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
-
-      let data = {};
-      try { data = await response.json(); } catch {}
-
-      if (response.ok) {
-        navigate('/')
-      } else {
-        setErrorMessage((data.detail && typeof data.detail === 'string')
-          ? data.detail
-          : 'Ошибка регистрации')
-      }
-    } catch {
-      setErrorMessage('Ошибка сети');
+      await authService.register(email, password)
+      navigate('/')
+    } catch (error) {
+      setErrorMessage(error.message || 'Ошибка сети')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -71,6 +59,7 @@ function SignIn() {
           placeholder='Введите электронную почту'
           value={email}
           onChange={(event) => setEmail(event.target.value)}
+          ref={emailRef}
           required
         />
 
@@ -111,9 +100,9 @@ function SignIn() {
         {errorMessage || '\u00A0'}
       </div>
 
-      { successMessage && (<div className="auth-message" role="alert">{successMessage}</div>) }
+      {successMessage && (<div className="auth-message" role="alert">{successMessage}</div>)}
     </div>
-  );
+  )
 }
 
-export default SignIn;
+export default SignIn
