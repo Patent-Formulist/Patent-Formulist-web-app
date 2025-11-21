@@ -3,14 +3,14 @@ import { Outlet } from 'react-router-dom'
 import WelcomeHeader from '../components/WelcomeHeader'
 import WelcomeFooter from '../components/WelcomeFooter'
 
-import '../styles/WelcomeLayout.css'
+import styles from '../styles/WelcomeLayout.module.css'
 
 function WelcomeLayout() {
   return (
-    <div className="welcome-layout">
+    <div className={styles.layout}>
       <WelcomeHeader />
 
-      <main className="welcome-main">
+      <main className={styles.main}>
         <Outlet />
       </main>
 

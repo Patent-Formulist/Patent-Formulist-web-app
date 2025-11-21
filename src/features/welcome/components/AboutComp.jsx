@@ -1,31 +1,31 @@
-import "../styles/AboutComp.css"
+import styles from "../styles/AboutComp.module.css"
 
 function AboutComp() {
   return (
-    <section className="help-section">
-      <h2 className="help-title">Мы поможем вам</h2>
+    <section className={styles.section}>
+      <h2 className={styles.title}>Мы поможем вам</h2>
 
-      <div className="timeline">
-        <div className="timeline-line"></div>
+      <div className={styles.timeline}>
+        <div className={styles.line}></div>
         
-        <div className="timeline-item">
-          <div className="timeline-dot"></div>
-          <p className="timeline-text">Выявим аналоги</p>
+        <div className={styles.item}>
+          <div className={styles.dot}></div>
+          <p className={styles.text}>Выявим аналоги</p>
         </div>
         
-        <div className="timeline-item">
-          <div className="timeline-dot"></div>
-          <p className="timeline-text">Скажем отличия от аналогов</p>
+        <div className={styles.item}>
+          <div className={styles.dot}></div>
+          <p className={styles.text}>Скажем отличия от аналогов</p>
         </div>
         
-        <div className="timeline-item">
-          <div className="timeline-dot"></div>
-          <p className="timeline-text">Поможем понять уникальность</p>
+        <div className={styles.item}>
+          <div className={styles.dot}></div>
+          <p className={styles.text}>Поможем понять уникальность</p>
         </div>
         
-        <div className="timeline-item">
-          <div className="timeline-dot"></div>
-          <p className="timeline-text">Сформулируем патентную формулу</p>
+        <div className={styles.item}>
+          <div className={styles.dot}></div>
+          <p className={styles.text}>Сформулируем патентную формулу</p>
         </div>
       </div>
     </section>

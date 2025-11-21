@@ -1,23 +1,23 @@
 import { Link } from 'react-router-dom'
 
-import "../styles/HeroComp.css"
+import styles from "../styles/HeroComp.module.css"
 
 function HeroComp() {
-    return(
-        <section className="hero-section">
-            <div className="hero-content">
-                <h1 className="hero-title">Formulist</h1>
+  return(
+    <section className={styles.section}>
+      <div className={styles.content}>
+        <h1 className={styles.title}>Formulist</h1>
 
-                <p className="hero-subtitle">
-                    Проверь уникальность своей идеи с помощью Formulist уже сейчас!
-                </p>
-                
-                <Link to="/signin" className="hero-btn">
-                    Попробовать
-                </Link>
-            </div>
-      </section>
-    )
+        <p className={styles.subtitle}>
+          Проверь уникальность своей идеи с помощью Formulist уже сейчас!
+        </p>
+        
+        <Link to="/signin" className={styles.btn}>
+          Попробовать
+        </Link>
+      </div>
+    </section>
+  )
 }
 
 export default HeroComp

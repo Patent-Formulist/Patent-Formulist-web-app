@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import authService from '../../../services/api/authService'
 
-import "../styles/Auth.css"
+import styles from "../styles/Auth.module.css"
 
 function SignIn() {
   const [email, setEmail] = useState('')
@@ -40,7 +40,7 @@ function SignIn() {
 
     try {
       await authService.register(email, password)
-      navigate('/')
+      navigate('/workspace')
     } catch (error) {
       setErrorMessage(error.message || 'Ошибка сети')
     } finally {
@@ -49,9 +49,9 @@ function SignIn() {
   }
 
   return (
-    <div className="auth-page">
+    <div className={styles.page}>
       <h1>Регистрация</h1>
-      <form className="auth-form" onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <label htmlFor="signup-email">Электронная почта</label>
         <input
           id="signup-email"
@@ -84,23 +84,23 @@ function SignIn() {
           aria-required="true"
         />
 
-        <p className="auth-prompt">
+        <p className={styles.prompt}>
           Уже зарегистрированы?{' '}
-          <Link to="/login" className="auth-link">
+          <Link to="/login" className={styles.link}>
             Войти
           </Link>
         </p>
 
-        <button type="submit" className="auth-btn" disabled={loading}>
+        <button type="submit" className={styles.btn} disabled={loading}>
           {loading ? 'Загрузка...' : 'Зарегистрироваться'}
         </button>
       </form>
  
-      <div className={errorMessage && "auth-error"} role="alert">
+      <div className={errorMessage ? styles.error : styles.errorPlaceholder} role="alert">
         {errorMessage || '\u00A0'}
       </div>
 
-      {successMessage && (<div className="auth-message" role="alert">{successMessage}</div>)}
+      {successMessage && (<div className={styles.message} role="alert">{successMessage}</div>)}
     </div>
   )
 }

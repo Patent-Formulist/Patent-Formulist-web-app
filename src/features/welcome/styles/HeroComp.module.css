@@ -1,4 +1,4 @@
-.hero-section {
+.section {
   background: rgba(15, 74, 132, 1);
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
@@ -7,7 +7,7 @@
   text-align: center;
 }
 
-.hero-content {
+.content {
   max-width: 800px;
   margin: 0 auto;
   display: flex;
@@ -16,7 +16,7 @@
   gap: 25px;
 }
 
-.hero-title {
+.title {
   color: white;
   font-size: 48px;
   font-weight: 700;
@@ -24,7 +24,7 @@
   letter-spacing: 1px;
 }
 
-.hero-subtitle {
+.subtitle {
   color: white;
   font-size: 20px;
   font-weight: 400;
@@ -33,7 +33,7 @@
   max-width: 600px;
 }
 
-.hero-btn {
+.btn {
   background: white;
   color: rgba(15, 74, 132, 1);
   padding: 14px 36px;
@@ -46,44 +46,44 @@
   margin-top: 10px;
 }
 
-.hero-btn:hover {
+.btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 768px) {
-  .hero-section {
+  .section {
     padding: 40px 20px;
   }
 
-  .hero-title {
+  .title {
     font-size: 36px;
   }
 
-  .hero-subtitle {
+  .subtitle {
     font-size: 18px;
   }
 
-  .hero-btn {
+  .btn {
     padding: 12px 30px;
     font-size: 16px;
   }
 }
 
 @media (max-width: 480px) {
-  .hero-section {
+  .section {
     padding: 30px 15px;
   }
 
-  .hero-title {
+  .title {
     font-size: 28px;
   }
 
-  .hero-subtitle {
+  .subtitle {
     font-size: 16px;
   }
 
-  .hero-btn {
+  .btn {
     padding: 10px 24px;
     font-size: 15px;
   }

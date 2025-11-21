@@ -1,8 +1,8 @@
-.faq-section {
+.section {
   padding: 80px 30px;
 }
 
-.faq-container {
+.container {
   max-width: 900px;
   margin: 0 auto;
   background: white;
@@ -11,7 +11,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-.faq-title {
+.title {
   font-size: 36px;
   font-weight: 700;
   color: rgba(0, 51, 102, 1);
@@ -19,21 +19,21 @@
   text-align: center;
 }
 
-.faq-list {
+.list {
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-.faq-item {
+.item {
   border-bottom: 2px solid rgba(0, 51, 102, 1);
 }
 
-.faq-item:last-child {
+.item:last-child {
   border-bottom: none;
 }
 
-.faq-question {
+.question {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -47,7 +47,7 @@
   transition: all 0.3s ease;
 }
 
-.faq-question span {
+.question span {
   color: rgba(0, 51, 102, 1);
   font-size: 18px;
   font-weight: 600;
@@ -55,33 +55,33 @@
   flex: 1;
 }
 
-.faq-question:hover span {
+.question:hover span {
   color: rgba(15, 74, 132, 1);
 }
 
-.faq-arrow {
+.arrow {
   width: 20px;
   height: 20px;
   transition: transform 0.3s ease;
   flex-shrink: 0;
 }
 
-.faq-arrow.rotated {
+.arrow.rotated {
   transform: rotate(180deg);
 }
 
-.faq-answer {
+.answer {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease, padding 0.3s ease;
 }
 
-.faq-answer.open {
+.answer.open {
   max-height: 300px;
   padding-bottom: 20px;
 }
 
-.faq-answer p {
+.answer p {
   color: rgba(0, 51, 102, 0.8);
   font-size: 16px;
   line-height: 1.6;
@@ -89,52 +89,52 @@
 }
 
 @media (max-width: 768px) {
-  .faq-section {
+  .section {
     padding: 60px 20px;
   }
 
-  .faq-container {
+  .container {
     padding: 30px 20px;
   }
 
-  .faq-title {
+  .title {
     font-size: 28px;
     margin-bottom: 30px;
   }
 
-  .faq-question span {
+  .question span {
     font-size: 16px;
   }
 
-  .faq-answer p {
+  .answer p {
     font-size: 14px;
   }
 
-  .faq-arrow {
+  .arrow {
     width: 18px;
     height: 18px;
   }
 }
 
 @media (max-width: 480px) {
-  .faq-section {
+  .section {
     padding: 50px 15px;
   }
 
-  .faq-container {
+  .container {
     padding: 25px 15px;
     border-radius: 10px;
   }
 
-  .faq-title {
+  .title {
     font-size: 24px;
   }
 
-  .faq-question {
+  .question {
     padding: 15px 0;
   }
 
-  .faq-question span {
+  .question span {
     font-size: 15px;
   }
 }

@@ -2,10 +2,9 @@ import { useState } from 'react'
 
 import arrow from '../../../resources/arrow.svg'
 
-import "../styles/FAQComp.css"
+import styles from "../styles/FAQComp.module.css"
 
 function FAQComp() {
-
   const [openIndexes, setOpenIndexes] = useState([])
 
   const faqs = [
@@ -42,31 +41,30 @@ function FAQComp() {
   }
   
   return (
-    <section className="faq-section">
-      <div className="faq-container">
-        <h2 className="faq-title">Частые вопросы</h2>
+    <section className={styles.section}>
+      <div className={styles.container}>
+        <h2 className={styles.title}>Частые вопросы</h2>
         
-        <div className="faq-list">
-          {
-            faqs.map((faq, index) => (
-              <div key={index} className="faq-item">
-                <button 
-                  className={`faq-question ${openIndexes.includes(index) ? 'active' : ''}`}
-                  onClick={() => toggleFaq(index)}
-                >
-                  <span>{faq.question}</span>
+        <div className={styles.list}>
+          {faqs.map((faq, index) => (
+            <div key={index} className={styles.item}>
+              <button 
+                className={`${styles.question} ${openIndexes.includes(index) ? styles.active : ''}`}
+                onClick={() => toggleFaq(index)}
+              >
+                <span>{faq.question}</span>
 
-                  <img 
-                    src={arrow} 
-                    alt="Toggle" 
-                    className={`faq-arrow ${openIndexes.includes(index) ? 'rotated' : ''}`}
-                  />
-                </button>
-                
-                <div className={`faq-answer ${openIndexes.includes(index) ? 'open' : ''}`}>
-                  <p>{faq.answer}</p>
-                </div>
+                <img 
+                  src={arrow} 
+                  alt="Toggle" 
+                  className={`${styles.arrow} ${openIndexes.includes(index) ? styles.rotated : ''}`}
+                />
+              </button>
+              
+              <div className={`${styles.answer} ${openIndexes.includes(index) ? styles.open : ''}`}>
+                <p>{faq.answer}</p>
               </div>
+            </div>
           ))}
         </div>
       </div>

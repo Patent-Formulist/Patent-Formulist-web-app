@@ -1,4 +1,4 @@
-.welcome-footer {
+.footer {
   background: rgba(15, 74, 132, 1);
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
@@ -6,57 +6,57 @@
   margin-top: auto;
 }
 
-.footer-container {
+.container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 30px 30px;
 }
 
-.footer-content {
+.content {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 60px;
 }
 
-.footer-brand {
+.brand {
   flex: 1;
   max-width: 400px;
 }
 
-.footer-title {
+.title {
   color: white;
   font-size: 28px;
   font-weight: 600;
   margin: 0 0 12px 0;
 }
 
-.footer-description {
+.description {
   color: rgba(255, 255, 255, 0.9);
   font-size: 16px;
   line-height: 1.5;
   margin: 0;
 }
 
-.footer-contacts {
+.contacts {
   flex: 1;
   max-width: 500px;
 }
 
-.footer-contacts-heading {
+.heading {
   color: white;
   font-size: 18px;
   font-weight: 500;
   margin: 0 0 20px 0;
 }
 
-.footer-contacts-grid {
+.grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
-.footer-contact-item {
+.item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -64,18 +64,18 @@
   transition: opacity 0.3s ease;
 }
 
-.footer-contact-item:hover {
+.item:hover {
   opacity: 0.8;
 }
 
-.footer-contact-icon {
+.icon {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
   filter: brightness(0) invert(1);
 }
 
-.footer-contact-text {
+.text {
   color: white;
   font-size: 14px;
   font-weight: 400;
@@ -83,47 +83,47 @@
 }
 
 @media (max-width: 768px) {
-  .footer-container {
+  .container {
     padding: 30px 20px 20px;
   }
 
-  .footer-content {
+  .content {
     flex-direction: column;
     gap: 30px;
   }
 
-  .footer-brand,
-  .footer-contacts {
+  .brand,
+  .contacts {
     max-width: 100%;
   }
 
-  .footer-title {
+  .title {
     font-size: 24px;
   }
 
-  .footer-description {
+  .description {
     font-size: 14px;
   }
 
-  .footer-contacts-grid {
+  .grid {
     grid-template-columns: 1fr;
   }
 
-  .footer-contact-text {
+  .text {
     font-size: 13px;
   }
 }
 
 @media (max-width: 480px) {
-  .footer-container {
+  .container {
     padding: 25px 15px 15px;
   }
 
-  .footer-title {
+  .title {
     font-size: 22px;
   }
 
-  .footer-contacts-heading {
+  .heading {
     font-size: 16px;
   }
 }
