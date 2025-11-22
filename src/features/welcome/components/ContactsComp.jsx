@@ -1,7 +1,7 @@
 import emailIcon from '../../../resources/mail.svg'
 import vkIcon from '../../../resources/message.svg'
 import telegramIcon from '../../../resources/plane.svg'
-import simIcon from '../../../resources/sim.svg'
+import phoneIcon from '../../../resources/phone.svg'
 
 import styles from "../styles/ContactsComp.module.css"
 
@@ -28,7 +28,7 @@ function ContactsComp() {
           </a>
 
           <a href="tel:+79991234567" className={styles.item}>
-            <img src={simIcon} alt="Phone" className={styles.icon} />
+            <img src={phoneIcon} alt="Phone" className={styles.icon} />
             <span className={styles.text}>+7 (9XX) XXX-XX-XX</span>
           </a>
         </div>

@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router-dom'
 import AutorizedUserRoute from './routes/AutorizeduserRoute'
 
 import WelcomeLayout from './features/welcome/layouts/WelcomeLayout'
-import WorkspaceLayout from './features/workspace/layouts/WorkspaceLayout'
 
 import Welcome from './features/welcome/pages/Welcome'
 import About from './features/welcome/pages/About'
@@ -27,8 +26,10 @@ export default function App() {
         <Route path='signin' element={<SignIn />} />
       </Route>
       <Route element={<AutorizedUserRoute />}>
-        <Route element={<WorkspaceLayout />}>
-          <Route path='workspace' element={<LogIn />} />
+        <Route element={<></>}>
+          <Route index path='workspace' element={<></>} />
+          <Route path='workspace/documentation' element={<></>} />
+          <Route path='workspace/questions' element={<></>} />
         </Route>
       </Route>
       <Route path="*" element={<NotFound />} />

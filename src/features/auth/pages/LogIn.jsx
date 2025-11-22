@@ -29,7 +29,7 @@ function LogIn() {
   }
 
   return (
-    <div className={styles.page}>
+    <div className={styles.pages}>
       <h1>Вход</h1>
       
       <form className={styles.form} onSubmit={handleSubmit}>
