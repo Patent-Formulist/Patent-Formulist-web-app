@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import arrow from '../../../resources/arrow.svg'
+import arrow from '../../../resources/arrow.svg';
 
-import styles from "../styles/FAQComp.module.css"
+import styles from "../styles/FAQComp.module.css";
 
 function FAQComp() {
-  const [openIndexes, setOpenIndexes] = useState([])
+  const [openIndexes, setOpenIndexes] = useState([]);
 
   const faqs = [
     {
@@ -28,7 +28,7 @@ function FAQComp() {
       question: 'Какие источники патентных данных используются?',
       answer: 'Мы используемы базу данных Роспатента.'
     }
-  ]
+  ];
 
   const toggleFaq = (index) => {
     setOpenIndexes(prevIndexes => {
@@ -38,7 +38,7 @@ function FAQComp() {
         return [...prevIndexes, index]
       }
     })
-  }
+  };
   
   return (
     <section className={styles.section}>
@@ -69,7 +69,7 @@ function FAQComp() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export default FAQComp
+export default FAQComp;

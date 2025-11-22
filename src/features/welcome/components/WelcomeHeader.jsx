@@ -1,16 +1,16 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import logo from '../../../resources/logo.svg'
-import funcsIcon from '../../../resources/funcs.svg'
+import logo from '../../../resources/logo.svg';
+import funcsIcon from '../../../resources/funcs.svg';
 
-import styles from '../styles/WelcomeHeader.module.css'
+import styles from '../styles/WelcomeHeader.module.css';
 
 function WelcomeHeader() {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => setMenuOpen(!menuOpen)
-  const closeMenu = () => setMenuOpen(false)
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <header className={styles.header}>
@@ -52,7 +52,7 @@ function WelcomeHeader() {
         </button>
       </div>
     </header>
-  )
+  );
 }
 
-export default WelcomeHeader
+export default WelcomeHeader;

@@ -1,9 +1,9 @@
-import ContactsComp from "../components/ContactsComp"
+import ContactsComp from "../components/ContactsComp";
 
 function Contacts() {
   return (
     <ContactsComp />
-  )
+  );
 }
 
-export default Contacts
+export default Contacts;

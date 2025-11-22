@@ -1,9 +1,9 @@
-import emailIcon from '../../../resources/mail.svg'
-import vkIcon from '../../../resources/message.svg'
-import telegramIcon from '../../../resources/plane.svg'
-import prhoneIcon from '../../../resources/phone.svg'
+import emailIcon from '../../../resources/mail.svg';
+import vkIcon from '../../../resources/message.svg';
+import telegramIcon from '../../../resources/plane.svg';
+import prhoneIcon from '../../../resources/phone.svg';
 
-import styles from '../styles/WelcomeFooter.module.css'
+import styles from '../styles/WelcomeFooter.module.css';
 
 function WelcomeFooter() {
   return (
@@ -44,7 +44,7 @@ function WelcomeFooter() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
-export default WelcomeFooter
+export default WelcomeFooter;

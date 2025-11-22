@@ -1,9 +1,9 @@
-import emailIcon from '../../../resources/mail.svg'
-import vkIcon from '../../../resources/message.svg'
-import telegramIcon from '../../../resources/plane.svg'
-import phoneIcon from '../../../resources/phone.svg'
+import emailIcon from '../../../resources/mail.svg';
+import vkIcon from '../../../resources/message.svg';
+import telegramIcon from '../../../resources/plane.svg';
+import phoneIcon from '../../../resources/phone.svg';
 
-import styles from "../styles/ContactsComp.module.css"
+import styles from "../styles/ContactsComp.module.css";
 
 function ContactsComp() {
   return (
@@ -34,7 +34,7 @@ function ContactsComp() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export default ContactsComp
+export default ContactsComp;

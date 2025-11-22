@@ -1,9 +1,9 @@
-import HeroComp from '../components/HeroComp'
-import AboutComp from '../components/AboutComp'
-import FAQComp from '../components/FAQComp'
-import ContactsComp from '../components/ContactsComp'
+import HeroComp from '../components/HeroComp';
+import AboutComp from '../components/AboutComp';
+import FAQComp from '../components/FAQComp';
+import ContactsComp from '../components/ContactsComp';
 
-import styles from '../styles/Welcome.module.css'
+import styles from '../styles/Welcome.module.css';
 
 function Welcome() {
   return (
@@ -13,7 +13,7 @@ function Welcome() {
       <ContactsComp />
       <FAQComp />
     </div>
-  )
+  );
 }
 
-export default Welcome
+export default Welcome;

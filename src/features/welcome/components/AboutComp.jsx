@@ -1,4 +1,4 @@
-import styles from "../styles/AboutComp.module.css"
+import styles from "../styles/AboutComp.module.css";
 
 function AboutComp() {
   return (
@@ -29,7 +29,7 @@ function AboutComp() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export default AboutComp
+export default AboutComp;

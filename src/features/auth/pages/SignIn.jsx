@@ -1,19 +1,19 @@
-import React, { useState, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-import authService from '../../../services/api/authService'
+import authService from '../../../services/api/authService';
 
-import styles from "../styles/Auth.module.css"
+import styles from "../styles/Auth.module.css";
 
 function SignIn() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
-  const emailRef = useRef(null)
-  const navigate = useNavigate()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const emailRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -46,7 +46,7 @@ function SignIn() {
     } finally {
       setLoading(false)
     }
-  }
+  };
 
   return (
     <div className={styles.page}>
@@ -102,7 +102,7 @@ function SignIn() {
 
       {successMessage && (<div className={styles.message} role="alert">{successMessage}</div>)}
     </div>
-  )
+  );
 }
 
-export default SignIn
+export default SignIn;

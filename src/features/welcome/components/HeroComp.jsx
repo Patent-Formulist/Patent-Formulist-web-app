@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
-import styles from "../styles/HeroComp.module.css"
+import styles from "../styles/HeroComp.module.css";
 
 function HeroComp() {
   return(
@@ -17,7 +17,7 @@ function HeroComp() {
         </Link>
       </div>
     </section>
-  )
+  );
 }
 
-export default HeroComp
+export default HeroComp;
