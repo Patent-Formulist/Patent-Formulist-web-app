@@ -1,6 +1,18 @@
+import { Outlet } from 'react-router-dom';
+
+import WorkspaceSidebar from '../components/WorkspaceSidebar';
+
+import styles from '../styles/WorkspaceLayout.module.css';
+
 function WorkspaceLayout() {
   return (
-    <div>WorkspaceLayout</div>
+    <>
+      <WorkspaceSidebar />
+
+      <main className={styles.main}>
+        <Outlet />
+      </main>
+    </>
   );
 }
 

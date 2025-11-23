@@ -16,7 +16,7 @@ function WelcomeHeader() {
     <header className={styles.header}>
       <div className={styles.container}>
         <Link to="/" className={styles.logoLink} onClick={closeMenu}>
-          <img src={logo} alt="Logo" className={styles.logo} />
+          <img src={logo} alt="Логотип" className={styles.logo} />
         </Link>
 
         <nav className={`${styles.navLinks} ${menuOpen ? styles.open : ''}`}>
@@ -48,7 +48,7 @@ function WelcomeHeader() {
           onClick={toggleMenu}
           aria-label="Toggle menu"
         >
-          <img src={funcsIcon} alt="Menu" className={styles.menuIcon} />
+          <img src={funcsIcon} alt="Меню" className={styles.menuIcon} />
         </button>
       </div>
     </header>

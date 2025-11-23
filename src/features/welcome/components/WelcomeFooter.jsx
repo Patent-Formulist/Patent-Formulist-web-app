@@ -21,22 +21,22 @@ function WelcomeFooter() {
             <h4 className={styles.heading}>Контакты</h4>
             <div className={styles.grid}>
               <a href="mailto:info@formulist.ru" className={styles.item}>
-                <img src={emailIcon} alt="Email" className={styles.icon} />
+                <img src={emailIcon} alt="Емэил" className={styles.icon} />
                 <span className={styles.text}>info@formulist.ru</span>
               </a>
 
               <a href="https://t.me/formulist" target="_blank" rel="noopener noreferrer" className={styles.item}>
-                <img src={telegramIcon} alt="Telegram" className={styles.icon} />
+                <img src={telegramIcon} alt="Телеграмм" className={styles.icon} />
                 <span className={styles.text}>@formulist</span>
               </a>
 
               <a href="https://vk.com/formulist" target="_blank" rel="noopener noreferrer" className={styles.item}>
-                <img src={vkIcon} alt="VK" className={styles.icon} />
+                <img src={vkIcon} alt="ВКонтакте" className={styles.icon} />
                 <span className={styles.text}>vk.com/formulist</span>
               </a>
 
               <a href="tel:+79991234567" className={styles.item}>
-                <img src={prhoneIcon} alt="Phone" className={styles.icon} />
+                <img src={prhoneIcon} alt="Телефон" className={styles.icon} />
                 <span className={styles.text}>+7 (9XX) XXX-XX-XX</span>
               </a>
             </div>

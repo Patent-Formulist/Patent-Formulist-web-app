@@ -11,6 +11,7 @@ function NotFound() {
         <Link to="/" className={styles.link}>
           Вернуться на главную
         </Link>
+        
       </div>
     </div>
   );

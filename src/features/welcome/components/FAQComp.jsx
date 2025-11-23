@@ -56,7 +56,7 @@ function FAQComp() {
 
                 <img 
                   src={arrow} 
-                  alt="Toggle" 
+                  alt="Стрелка" 
                   className={`${styles.arrow} ${openIndexes.includes(index) ? styles.rotated : ''}`}
                 />
               </button>

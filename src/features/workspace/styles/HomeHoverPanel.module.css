@@ -1,0 +1,144 @@
+.hoverPanelContent {
+  position: relative;
+  height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: #234b7a;
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.panelTitle {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #316492;
+  margin: 0 0 16px 0;
+}
+
+.searchBlock {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #316492;
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin-bottom: 16px;
+  background: white;
+}
+
+.searchBlock .icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #234b7a;
+  background: transparent;
+}
+
+.newPatentButton {
+  background-color: #316492;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: background-color 0.2s;
+}
+
+.newPatentButton:hover {
+  background-color: #234b7a;
+}
+
+.patentList {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.patentItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #316492;
+  border-bottom: 1px solid #e0eaf5;
+  transition: background-color 0.2s;
+}
+
+.patentItem:last-child {
+  border-bottom: none;
+}
+
+.patentItem:hover {
+  background-color: rgba(49, 100, 146, 0.1);
+}
+
+.patentItemActive {
+  background-color: rgba(49, 100, 146, 0.25);
+  font-weight: 700;
+}
+
+.patentItem .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.patentName {
+  font-size: 14px;
+  color: #316492;
+}
+
+.pinButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pinButton:hover {
+  background-color: rgba(49, 100, 146, 0.15);
+}
+
+.pinButton.pinned {
+  background-color: rgba(49, 100, 146, 0.4);
+}
+
+.pinButton img {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  transition: inherit;
+}
