@@ -28,12 +28,12 @@ export default function App() {
       </Route>
       <Route element={<AutorizedUserRoute />}>
         <Route path="workspace" element={<WorkspaceLayout />}>
-          <Route index element={<LogIn />} />
-          <Route path="documentation" element={<SignIn />}/>
+          <Route index element={<div>Cоздай патент</div>} />
+          <Route path="documentation" element={<div>Документация</div>}/>
           <Route path="questions" element={<FAQ />}/>
-          <Route path="patents/:id" element={<About />} />
+          <Route path="patents/:id" element={<div>Патент</div>} />
         </Route>
-        <Route path="profile" element={<Contacts />} />
+        <Route path="profile" element={<div>Профиль</div>} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

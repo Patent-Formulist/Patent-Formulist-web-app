@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   color: #234b7a;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: white;
 }
 
 .panelHeader {
