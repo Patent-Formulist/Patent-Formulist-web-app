@@ -1,58 +1,58 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import logo from '../../../resources/logo.svg'
-import funcsIcon from '../../../resources/funcs.svg'
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import '../styles/WelcomeHeader.css'
+import logo from '../../../resources/logo.svg';
+import funcsIcon from '../../../resources/funcs.svg';
+
+import styles from '../styles/WelcomeHeader.module.css';
 
 function WelcomeHeader() {
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const [menuOpen, setMenuOpen] = useState(false)
-
-  const toggleMenu = () => setMenuOpen(!menuOpen)
-  const closeMenu = () => setMenuOpen(false)
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const closeMenu = () => setMenuOpen(false);
 
   return (
-    <header className="welcome-header">
-      <div className="header-container">
-        <Link to="/" className="logo-link" onClick={closeMenu}>
-          <img src={logo} alt="Logo" className="logo" />
+    <header className={styles.header}>
+      <div className={styles.container}>
+        <Link to="/" className={styles.logoLink} onClick={closeMenu}>
+          <img src={logo} alt="Логотип" className={styles.logo} />
         </Link>
 
-        <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
+        <nav className={`${styles.navLinks} ${menuOpen ? styles.open : ''}`}>
           <Link to="/about" onClick={closeMenu}>О нас</Link>
           <Link to="/faq" onClick={closeMenu}>Частые вопросы</Link>
           <Link to="/contacts" onClick={closeMenu}>Контакты</Link>
           
-          <div className="mobile-auth-buttons">
-            <Link to="/register" className="mobile-register-btn" onClick={closeMenu}>
+          <div className={styles.mobileAuthButtons}>
+            <Link to="/register" className={styles.mobileRegisterBtn} onClick={closeMenu}>
               Регистрация
             </Link>
-            <Link to="/login" className="mobile-login-btn" onClick={closeMenu}>
+            <Link to="/login" className={styles.mobileLoginBtn} onClick={closeMenu}>
               Войти
             </Link>
           </div>
         </nav>
 
-        <div className="auth-buttons">
-          <Link to="/signin" className="register-btn" onClick={closeMenu}>
+        <div className={styles.authButtons}>
+          <Link to="/signin" className={styles.registerBtn} onClick={closeMenu}>
             Регистрация
           </Link>
-          <Link to="/login" className="login-btn" onClick={closeMenu}>
+          <Link to="/login" className={styles.loginBtn} onClick={closeMenu}>
             Войти
           </Link>
         </div>
 
         <button 
-          className={`hamburger ${menuOpen ? 'open' : ''}`} 
+          className={`${styles.hamburger} ${menuOpen ? styles.hamburgerOpen : ''}`}
           onClick={toggleMenu}
           aria-label="Toggle menu"
         >
-          <img src={funcsIcon} alt="Menu" className="menu-icon" />
+          <img src={funcsIcon} alt="Меню" className={styles.menuIcon} />
         </button>
       </div>
     </header>
-  )
+  );
 }
 
-export default WelcomeHeader
+export default WelcomeHeader;

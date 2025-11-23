@@ -1,10 +1,10 @@
-.welcome-layout {
+.layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-.welcome-main {
+.main {
   flex: 1;
   margin-top: -15px;
 }

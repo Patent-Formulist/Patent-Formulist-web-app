@@ -1,4 +1,4 @@
-.auth-page {
+.page {
   max-width: 400px;
   margin: 80px auto;
   padding: 30px;
@@ -7,42 +7,25 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
 
-@media (max-width: 480px) {
-  .auth-page {
-    padding: 12px;
-  }
-
-  .auth-form input {
-    font-size: 1em;
-    padding: 8px;
-  }
-
-  .auth-btn {
-    font-size: 1em;
-    padding: 8px 10px;
-  }
-}
-
-
-.auth-page h1 {
+.page h1 {
   text-align: center;
   margin-bottom: 20px;
   color: #333;
 }
 
-.auth-form {
+.form {
   display: flex;
   flex-direction: column;
 }
 
-.auth-form label {
+.form label {
   margin-bottom: 4px;
   font-weight: 600;
   color: #222;
   letter-spacing: 0.02em;
 }
 
-.auth-form input {
+.form input {
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 4px;
@@ -51,12 +34,12 @@
   transition: border-color 0.3s ease;
 }
 
-.auth-form input:focus {
+.form input:focus {
   border-color: #0078d7;
   outline: none;
 }
 
-.auth-btn {
+.btn {
   padding: 10px 15px;
   background-color: #0078d7;
   border: none;
@@ -68,41 +51,42 @@
   transition: background-color 0.3s ease;
 }
 
-.auth-btn:hover,
-.auth-btn:focus {
+.btn:hover,
+.btn:focus {
   background-color: #005a9e;
   outline: none;
 }
 
-.auth-btn:disabled {
+.btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.auth-message {
+.message {
   margin-top: 10px;
   font-weight: 600;
   color: green;
 }
 
-.auth-prompt {
+.prompt {
   color: #444;
   text-align: center;
 }
 
-.auth-link {
+.link {
   color: #0078d7;
   text-decoration: none;
   cursor: pointer;
   transition: color 0.2s;
 }
 
-.auth-link:hover, .auth-link:focus {
+.link:hover, 
+.link:focus {
   color: #005a9e;
   outline: none;
 }
 
-.auth-error {
+.error {
   margin-top: 10px;
   font-weight: 600;
   color: #d70000;   
@@ -110,4 +94,25 @@
   border-radius: 4px;
   padding: 8px;
   min-height: 20px; 
+}
+
+.errorPlaceholder {
+  margin-top: 10px;
+  min-height: 20px;
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 12px;
+  }
+
+  .form input {
+    font-size: 1em;
+    padding: 8px;
+  }
+
+  .btn {
+    font-size: 1em;
+    padding: 8px 10px;
+  }
 }

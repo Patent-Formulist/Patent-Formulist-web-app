@@ -1,9 +1,9 @@
-import AboutComp from "../components/AboutComp"
+import AboutComp from "../components/AboutComp";
 
 function About() {
   return (
     <AboutComp />
-  )
+  );
 }
 
-export default About
+export default About;

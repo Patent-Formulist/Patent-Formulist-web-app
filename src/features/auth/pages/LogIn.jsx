@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-import authService from '../../../services/api/authService'
+import authService from '../../../services/api/authService';
 
-import "../styles/Auth.css"
+import styles from "../styles/Auth.module.css";
 
 function LogIn() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const navigate = useNavigate()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -20,19 +20,19 @@ function LogIn() {
     try {
       const data = await authService.login(email, password)
       authService.saveToken(data.access_token)
-      navigate('/')
+      navigate('/workspace')
     } catch (error) {
       setErrorMessage(error.message || 'Ошибка сети')
     } finally {
       setLoading(false)
     }
-  }
+  };
 
   return (
-    <div className="auth-page">
+    <div className={styles.page}>
       <h1>Вход</h1>
       
-      <form className="auth-form" onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <label htmlFor="login-email">Электронная почта</label>
         <input
           id="login-email"
@@ -53,23 +53,23 @@ function LogIn() {
           required
         />
         
-        <p className="auth-prompt">
+        <p className={styles.prompt}>
           Не зарегистрированы?{' '}
-          <Link to="/signin" className="auth-link">
+          <Link to="/signin" className={styles.link}>
             Зарегистрируйтесь
           </Link>
         </p>
 
-        <button type="submit" className="auth-btn" disabled={loading}>
+        <button type="submit" className={styles.btn} disabled={loading}>
           {loading ? 'Загрузка...' : 'Войти'}
         </button>
       </form>
 
-      <div className={errorMessage && "auth-error"} aria-live="polite" role="alert">
+      <div className={errorMessage ? styles.error : styles.errorPlaceholder} aria-live="polite" role="alert">
         {errorMessage || '\u00A0'}
       </div>
     </div>
-  )
+  );
 }
 
-export default LogIn
+export default LogIn;

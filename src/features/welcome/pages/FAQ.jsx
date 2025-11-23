@@ -1,9 +1,9 @@
-import FAQComp from "../components/FAQComp"
+import FAQComp from "../components/FAQComp";
 
 function FAQ() {
   return (
     <FAQComp />
-  )
+  );
 }
 
-export default FAQ
+export default FAQ;
