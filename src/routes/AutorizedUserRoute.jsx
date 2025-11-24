@@ -3,8 +3,8 @@ import { Navigate, Outlet } from "react-router-dom";
 import authService from '../services/auth/authService'
 
 function AutorizedUserRoute() {
-    const token = authService.getToken();
-    const isAuthorized = Boolean(token) && token.length > 10;
+    const userAccessToken = authService.getToken();
+    const isAuthorized = Boolean(userAccessToken) && userAccessToken.length > 10;
 
     return isAuthorized
         ? <Outlet />

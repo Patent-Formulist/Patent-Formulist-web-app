@@ -2,14 +2,14 @@ import { API_PATENT_ENDPOINTS } from '../apiConfig';
 
 class PatentService {
 
-    async getUserPatents(userId) {
+    async getUserPatents(userAccessToken) {
         const response = await fetch(
             API_PATENT_ENDPOINTS.PATENT_GET_ALL, 
             {
                 method: 'GET',
                 headers: {
-                    'X-User-Id': userId,
-                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${userAccessToken}`, 
+                    'Accept': 'application/json'
                 },
             }
         );
@@ -38,16 +38,19 @@ class PatentService {
             }
         }
 
-        return data.patents || {};
+        if (data && typeof data.patents === 'object') {
+            return Object.entries(data.patents).map(([id, patent]) => ({ id, ...patent }));
+        }
+        return [];
     }
 
-    async getPatent(patentUuid, userId) {
+    async getPatent(patentUuid, userAccessToken) {
         const response = await fetch(
             API_PATENT_ENDPOINTS.PATENT_GET(patentUuid),
             {
                 method: 'GET',
                 headers: {
-                    'X-User-Id': userId,
+                    'Authorization': `Bearer ${userAccessToken}`,
                     'Accept': 'application/json',
                 },
             }
@@ -79,13 +82,13 @@ class PatentService {
         return data;
     }
 
-    async editPatent(patentUuid, userId, patentData) {
+    async editPatent(patentUuid, userAccessToken, patentData) {
         const response = await fetch(
             API_PATENT_ENDPOINTS.PATENT_UPDATE(patentUuid),
             {
                 method: 'PUT',
                 headers: {
-                    'X-User-Id': userId,
+                    'Authorization': `Bearer ${userAccessToken}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
@@ -122,13 +125,13 @@ class PatentService {
         return data;
     }
 
-    async deletePatent(patentUuid, userId) {
+    async deletePatent(patentUuid, userAccessToken) {
         const response = await fetch(
             API_PATENT_ENDPOINTS.PATENT_DELETE(patentUuid),
             {
                 method: 'DELETE',
                 headers: {
-                    'X-User-Id': userId,
+                    'Authorization': `Bearer ${userAccessToken}`,
                     'Accept': 'application/json',
                 },
             }
@@ -161,13 +164,13 @@ class PatentService {
         return data;
     }
 
-    async createPatent(userId, patentName) {
+    async createPatent(userAccessToken, patentName) {
         const response = await fetch(
             API_PATENT_ENDPOINTS.PATENT_CREATE,
             {
                 method: 'POST',
                 headers: {
-                    'X-User-Id': userId,
+                    'Authorization': `Bearer ${userAccessToken}`, 
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },

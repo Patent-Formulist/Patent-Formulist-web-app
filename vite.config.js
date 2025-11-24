@@ -8,10 +8,11 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'http://formulinked.ru',     
         changeOrigin: true,
         secure: false,
-      }
-    }
-  }
+        rewrite: path => path.replace(/^\/api/, '/api/v1'),
+      },
+    },
+  },
 })

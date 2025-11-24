@@ -30,7 +30,6 @@ class AuthService {
         let data = '';
         try {
             data = await response.json();
-            console.log('Ответ сервера:', data)
         } catch {
             throw new Error('Ошибка парсинга ответа');
         }
@@ -63,7 +62,6 @@ class AuthService {
         let data = '';
         try {
             data = await response.json();
-            console.log('Ответ сервера:', data)
         } catch {
             throw new Error('Ошибка парсинга ответа');
         }

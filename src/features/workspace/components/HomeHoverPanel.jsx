@@ -1,24 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import panelStyles from '../styles/HomeHoverPanel.module.css';
+import patentService from '../../../services/patent/patentService';
+import authService from '../../../services/auth/authService';
+
+import styles from '../styles/HomeHoverPanel.module.css';
 
 import pin from '../../../resources/pin.svg';
 import activePin from '../../../resources/activePin.svg';
 import magnifier from '../../../resources/magnifier.svg';
 import paper from '../../../resources/paper.svg';
 
-export default function HomeHoverPanel({ isPinned, onTogglePin }) {
+export default function HomeHoverPanel({ isPinned, onTogglePin, refreshFlag }) {
   const [searchText, setSearchText] = useState('');
   const [activePatentId, setActivePatentId] = useState(null);
+  const [patents, setPatents] = useState([]);
 
+  const userAccessToken = authService.getToken();
   const navigate = useNavigate();
 
-  //TODO: достать из бд патенты
-  const patents = [
-    { id: 1, name: 'Патент 1' },
-    { id: 2, name: 'Патент 2' }
-  ];
+  useEffect(() => {
+    async function loadPatents() {
+      try {
+        const data = await patentService.getUserPatents(userAccessToken);
+        setPatents(data);
+      } catch (e) {
+        alert(`Ошибка загрузки патентов: ${e.message}`);
+      }
+    }
+    if (userAccessToken) {
+      loadPatents();
+    }
+  }, [userAccessToken, refreshFlag]);
 
   const onSearchChange = (e) => setSearchText(e.target.value);
 
@@ -29,12 +42,16 @@ export default function HomeHoverPanel({ isPinned, onTogglePin }) {
     navigate(`/workspace/patents/${id}`);
   };
 
+  const filteredPatents = patents.filter(
+    p => p.name && p.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
-    <div className={panelStyles.hoverPanelContent}>
-      <header className={panelStyles.panelHeader}>
-        <span className={panelStyles.panelTitle}>Главная</span>
+    <div className={styles.hoverPanelContent}>
+      <header className={styles.panelHeader}>
+        <span className={styles.panelTitle}>Главная</span>
         <button
-          className={`${panelStyles.pinButton} ${isPinned ? panelStyles.pinned : ''}`}
+          className={`${styles.pinButton} ${isPinned ? styles.pinned : ''}`}
           onClick={onTogglePin}
           aria-label="Закрепить панель"
           type="button"
@@ -43,35 +60,35 @@ export default function HomeHoverPanel({ isPinned, onTogglePin }) {
         </button>
       </header>
 
-      <hr className={panelStyles.divider} />
+      <hr className={styles.divider} />
 
-      <div className={panelStyles.searchBlock}>
-        <img src={magnifier} alt="Поиск" className={panelStyles.icon} />
+      <div className={styles.searchBlock}>
+        <img src={magnifier} alt="Поиск" className={styles.icon} />
         <input
           type="text"
           placeholder="Поиск"
           value={searchText}
           onChange={onSearchChange}
-          className={panelStyles.searchInput}
+          className={styles.searchInput}
         />
       </div>
 
-      <button className={panelStyles.newPatentButton} onClick={onNewPatentClick}>
+      <button className={styles.newPatentButton} onClick={onNewPatentClick}>
         Новый патент
       </button>
 
-      <div className={panelStyles.patentList}>
-        {patents.map((patent) => {
+      <div className={styles.patentList}>
+        {filteredPatents.map((patent) => {
           const isActive = patent.id === activePatentId;
           return (
             <button
               key={patent.id}
-              className={`${panelStyles.patentItem} ${isActive ? panelStyles.patentItemActive : ''}`}
+              className={`${styles.patentItem} ${isActive ? styles.patentItemActive : ''}`}
               onClick={() => onPatentClick(patent.id)}
               type="button"
             >
-              <img src={paper} alt="Патент" className={panelStyles.icon} />
-              <span className={panelStyles.patentName}>{patent.name}</span>
+              <img src={paper} alt="Патент" className={styles.icon} />
+              <span className={styles.patentName}>{patent.name}</span>
             </button>
           );
         })}
