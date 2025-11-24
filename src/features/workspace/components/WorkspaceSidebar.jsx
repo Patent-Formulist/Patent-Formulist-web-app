@@ -26,7 +26,10 @@ export default function WorkspaceSidebar() {
   const handleMouseEnterPanel = () => setIsHomePanelOpen(true);
   const handleMouseLeavePanel = () => { if (!isPanelPinned) setIsHomePanelOpen(false); };
 
-  const togglePin = () => setIsPanelPinned(p => !p);
+  const togglePin = () => {
+    if (isPanelPinned) setIsHomePanelOpen(false);
+    setIsPanelPinned(p => !p);
+  }
 
   return (
     <>
