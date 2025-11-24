@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import patentService from '../../../services/patent/patentService';
-import authService from '../../../services/auth/authService';
 
 import styles from '../styles/HomeHoverPanel.module.css';
 
@@ -16,26 +15,24 @@ export default function HomeHoverPanel({ isPinned, onTogglePin, refreshFlag }) {
   const [activePatentId, setActivePatentId] = useState(null);
   const [patents, setPatents] = useState([]);
 
-  const userAccessToken = authService.getToken();
   const navigate = useNavigate();
 
   useEffect(() => {
     async function loadPatents() {
       try {
-        const data = await patentService.getUserPatents(userAccessToken);
+        const data = await patentService.getUserPatents();
+        console.log(data);
         setPatents(data);
       } catch (e) {
         alert(`Ошибка загрузки патентов: ${e.message}`);
       }
     }
-    if (userAccessToken) {
-      loadPatents();
-    }
-  }, [userAccessToken, refreshFlag]);
+    loadPatents();
+  }, [refreshFlag]);
 
   const onSearchChange = (e) => setSearchText(e.target.value);
 
-  const onNewPatentClick = () => alert('Функционал создания нового патента пока не реализован');
+  const onNewPatentClick = () => navigate('/workspace/patent-creation');
 
   const onPatentClick = (id) => {
     setActivePatentId(id);

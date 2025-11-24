@@ -1,8 +1,5 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-
-import patentService from '../../../services/patent/patentService';
-import authService from '../../../services/auth/authService';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 
 import styles from '../styles/WorkspaceSidebar.module.css';
 import HomeHoverPanel from './HomeHoverPanel';
@@ -27,23 +24,13 @@ export default function WorkspaceSidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
   const [refreshFlag, setRefreshFlag] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleMouseEnterNavItem = () => setIsHomePanelOpen(true);
   const handleMouseLeaveNavItem = () => { if (!isPanelPinned) setIsHomePanelOpen(false); };
   const handleMouseEnterPanel = () => setIsHomePanelOpen(true);
   const handleMouseLeavePanel = () => { if (!isPanelPinned) setIsHomePanelOpen(false); };
-  const handleCreateTestPatent = async () => {
-    const userAccessToken = authService.getToken();
-    if (!userAccessToken) {
-      alert('Вы не авторизованы');
-      return;
-    }
-    try {
-      await patentService.createPatent(userAccessToken, 'Тестовый патент');
-      setRefreshFlag(v => !v); 
-    } catch (e) {
-      alert('Ошибка создания патента: ' + e.message);
-    }
-  };
+  const handleCreatePatent = () => navigate('/workspace/patent-creation');
 
   const togglePin = () => {
     if (isPanelPinned) setIsHomePanelOpen(false);
@@ -74,7 +61,7 @@ export default function WorkspaceSidebar() {
           <button 
             type="button" 
             className={styles.circleButton} 
-            onClick={handleCreateTestPatent}
+            onClick={handleCreatePatent}
           >
             <img src={plus} alt="Новый" className={styles.actionIcon} />
           </button>
@@ -91,7 +78,7 @@ export default function WorkspaceSidebar() {
               <NavLink
                 to={item.to}
                 end={item.id === 'home'}
-                onClick={() => setIsSidebarOpen(false)} // Закрыть меню при клике
+                onClick={() => setIsSidebarOpen(false)} 
                 className={({ isActive }) =>
                   `${styles.navButton} ${isActive ? styles.navButtonActive : ''}`
                 }
