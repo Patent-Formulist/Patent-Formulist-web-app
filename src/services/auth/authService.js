@@ -1,62 +1,80 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { API_AUTH_ENDPOINTS } from '../apiConfig';
 
 class AuthService {
+    getDeviceId() {
+        let deviceId = localStorage.getItem('device_id');
 
-    async login(email, password) {
+        if (!deviceId) {
+            deviceId = uuidv4();
+            localStorage.setItem('device_id', deviceId);
+        }
 
-        const params = new URLSearchParams();
-        params.append('username', email);
-        params.append('password', password);
+        return deviceId;
+    }
 
+    async login(login, password) {
         const response = await fetch(
             API_AUTH_ENDPOINTS.LOGIN, 
             {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-device-id': this.getDeviceId()
+                },
+                body: JSON.stringify({ login, password }),
             }
         );
 
-        let data = {};
+        let data = '';
         try {
             data = await response.json();
+            console.log('Ответ сервера:', data)
         } catch {
             throw new Error('Ошибка парсинга ответа');
         }
 
         if (!response.ok) {
-            throw new Error(data.detail || 'Неверный email или пароль');;
-        }
-
-        if (!data.access_token) {
-            throw new Error('Токен не получен');
+            if (response.status === 422 && data.detail) {
+                throw new Error(
+                    Array.isArray(data.detail) ? data.detail.map(d => d.msg).join('; ') : data.detail
+                );
+            }
+            throw new Error('Неверный логин или пароль');
         }
 
         return data;
     }
 
-    async register(email, password) {
-
+    async register(login, password) {
         const response = await fetch(
             API_AUTH_ENDPOINTS.REGISTER, 
             {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-device-id': this.getDeviceId()
+                },
+                body: JSON.stringify({ login, password }),
             }
         );
 
-        let data = {};
+        let data = '';
         try {
             data = await response.json();
-        } catch {}
+            console.log('Ответ сервера:', data)
+        } catch {
+            throw new Error('Ошибка парсинга ответа');
+        }
 
         if (!response.ok) {
-            throw new Error(
-                (data.detail && typeof data.detail === 'string')
-                ? data.detail
-                : 'Ошибка регистрации'
-            );
+            if (response.status === 422 && data.detail) {
+                throw new Error(
+                    Array.isArray(data.detail) ? data.detail.map(d => d.msg).join('; ') : data.detail
+                );
+            }
+            throw new Error('Ошибка регистрации');
         }
 
         return data;
