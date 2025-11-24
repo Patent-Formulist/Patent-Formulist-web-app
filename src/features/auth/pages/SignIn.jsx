@@ -1,29 +1,27 @@
 import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import authService from '../../../services/api/authService';
+import authService from '../../../services/auth/authService';
 
-import styles from "../styles/Auth.module.css";
+import styles from '../styles/Auth.module.css';
 
 function SignIn() {
-  const [email, setEmail] = useState('');
+  const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const emailRef = useRef(null);
+  const loginRef = useRef(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     setLoading(true)
     setErrorMessage('')
-    setSuccessMessage('')
 
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      setErrorMessage('Введите корректный e‑mail в формате adress@site.ru')
-      emailRef.current && emailRef.current.focus()
+    if (login.length < 4) {
+      setErrorMessage('Логин должен быть не менее 4 символов')
+      loginRef.current && loginRef.current.focus()
       setLoading(false)
       return
     }
@@ -39,70 +37,64 @@ function SignIn() {
     }
 
     try {
-      await authService.register(email, password)
+      const data = await authService.register(login, password)
+      authService.saveToken(data.access)
       navigate('/workspace')
     } catch (error) {
       setErrorMessage(error.message || 'Ошибка сети')
     } finally {
       setLoading(false)
     }
-  };
+  }
 
   return (
     <div className={styles.page}>
       <h1>Регистрация</h1>
       <form className={styles.form} onSubmit={handleSubmit}>
-        <label htmlFor="signup-email">Электронная почта</label>
+        <label htmlFor="signup-login">Логин</label>
         <input
-          id="signup-email"
-          type="email"
-          placeholder='Введите электронную почту'
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          ref={emailRef}
+          id="signup-login"
+          type="text"
+          placeholder="Введите логин"
+          value={login}
+          onChange={(e) => setLogin(e.target.value)}
+          ref={loginRef}
           required
         />
-
         <label htmlFor="signup-password">Пароль</label>
         <input
           id="signup-password"
           type="password"
-          placeholder='Введите пароль'
+          placeholder="Введите пароль"
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
-
         <label htmlFor="signup-confirm-password">Повторите пароль</label>
         <input
           id="signup-confirm-password"
           type="password"
-          placeholder='Подтвердите пароль'
+          placeholder="Подтвердите пароль"
           value={confirmPassword}
-          onChange={(event) => setConfirmPassword(event.target.value)}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           required
           aria-required="true"
         />
-
         <p className={styles.prompt}>
           Уже зарегистрированы?{' '}
           <Link to="/login" className={styles.link}>
             Войти
           </Link>
         </p>
-
         <button type="submit" className={styles.btn} disabled={loading}>
           {loading ? 'Загрузка...' : 'Зарегистрироваться'}
         </button>
       </form>
- 
       <div className={errorMessage ? styles.error : styles.errorPlaceholder} role="alert">
         {errorMessage || '\u00A0'}
       </div>
-
-      {successMessage && (<div className={styles.message} role="alert">{successMessage}</div>)}
     </div>
-  );
+  )
 }
 
-export default SignIn;
+export default SignIn

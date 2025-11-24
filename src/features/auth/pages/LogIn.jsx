@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import authService from '../../../services/api/authService';
+import authService from '../../../services/auth/authService';
 
-import styles from "../styles/Auth.module.css";
+import styles from '../styles/Auth.module.css';
 
 function LogIn() {
-  const [email, setEmail] = useState('');
+  const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -18,58 +18,53 @@ function LogIn() {
     setErrorMessage('')
 
     try {
-      const data = await authService.login(email, password)
-      authService.saveToken(data.access_token)
+      const data = await authService.login(login, password)
+      authService.saveToken(data.access)
       navigate('/workspace')
     } catch (error) {
       setErrorMessage(error.message || 'Ошибка сети')
     } finally {
       setLoading(false)
     }
-  };
+  }
 
   return (
     <div className={styles.page}>
       <h1>Вход</h1>
-      
       <form className={styles.form} onSubmit={handleSubmit}>
-        <label htmlFor="login-email">Электронная почта</label>
+        <label htmlFor="login-username">Логин</label>
         <input
-          id="login-email"
-          type="email"
-          placeholder='Введите электронную почту'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          id="login-username"
+          type="text"
+          placeholder="Введите логин"
+          value={login}
+          onChange={(e) => setLogin(e.target.value)}
           required
         />
-        
         <label htmlFor="login-password">Пароль</label>
         <input
           id="login-password"
           type="password"
-          placeholder='Введите пароль'
+          placeholder="Введите пароль"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        
         <p className={styles.prompt}>
           Не зарегистрированы?{' '}
           <Link to="/signin" className={styles.link}>
             Зарегистрируйтесь
           </Link>
         </p>
-
         <button type="submit" className={styles.btn} disabled={loading}>
           {loading ? 'Загрузка...' : 'Войти'}
         </button>
       </form>
-
       <div className={errorMessage ? styles.error : styles.errorPlaceholder} aria-live="polite" role="alert">
         {errorMessage || '\u00A0'}
       </div>
     </div>
-  );
+  )
 }
 
 export default LogIn;

@@ -101,7 +101,7 @@
   min-height: 20px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .page {
     padding: 12px;
   }

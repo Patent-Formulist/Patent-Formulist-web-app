@@ -31,7 +31,7 @@ export default function HomeHoverPanel({ isPinned, onTogglePin }) {
 
   return (
     <div className={panelStyles.hoverPanelContent}>
-      <div className={panelStyles.panelHeader}>
+      <header className={panelStyles.panelHeader}>
         <span className={panelStyles.panelTitle}>Главная</span>
         <button
           className={`${panelStyles.pinButton} ${isPinned ? panelStyles.pinned : ''}`}
@@ -41,7 +41,7 @@ export default function HomeHoverPanel({ isPinned, onTogglePin }) {
         >
           <img src={isPinned ? activePin : pin} alt="Pin" />
         </button>
-      </div>
+      </header>
 
       <hr className={panelStyles.divider} />
 
