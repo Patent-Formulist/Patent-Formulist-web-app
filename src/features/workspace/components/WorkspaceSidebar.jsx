@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 
-import sidebarStyles from '../styles/WorkspaceSidebar.module.css';
+import styles from '../styles/WorkspaceSidebar.module.css';
 import HomeHoverPanel from './HomeHoverPanel';
 
 import logo from '../../../resources/logo.svg';
@@ -22,11 +22,15 @@ export default function WorkspaceSidebar() {
   const [isHomePanelOpen, setIsHomePanelOpen] = useState(false);
   const [isPanelPinned, setIsPanelPinned] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  const [refreshFlag, setRefreshFlag] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleMouseEnterNavItem = () => setIsHomePanelOpen(true);
   const handleMouseLeaveNavItem = () => { if (!isPanelPinned) setIsHomePanelOpen(false); };
   const handleMouseEnterPanel = () => setIsHomePanelOpen(true);
   const handleMouseLeavePanel = () => { if (!isPanelPinned) setIsHomePanelOpen(false); };
+  const handleCreatePatent = () => navigate('/workspace/patent-creation');
 
   const togglePin = () => {
     if (isPanelPinned) setIsHomePanelOpen(false);
@@ -38,7 +42,7 @@ export default function WorkspaceSidebar() {
   return (
     <>
       <button
-        className={sidebarStyles.mobileMenuButton}
+        className={styles.mobileMenuButton}
         onClick={toggleSidebar}
         aria-label={isSidebarOpen ? 'Закрыть меню' : 'Открыть меню'}
         type="button"
@@ -46,56 +50,64 @@ export default function WorkspaceSidebar() {
         <img src={menu} alt="Меню" />
       </button>
 
-      <aside className={`${sidebarStyles.sidebar} ${isSidebarOpen ? sidebarStyles.sidebarOpen : ''}`}>
-        <header className={sidebarStyles.header}>
-          <Link to="/workspace" className={sidebarStyles.logoLink} onClick={() => setIsSidebarOpen(false)}>
-            <img src={logo} alt="Логотип" className={sidebarStyles.logo} />
+      <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
+        <header className={styles.header}>
+          <Link to="/workspace" className={styles.logoLink} onClick={() => setIsSidebarOpen(false)}>
+            <img src={logo} alt="Логотип" className={styles.logo} />
           </Link>
         </header>
 
-        <div className={sidebarStyles.actions}>
-          <button type="button" className={sidebarStyles.circleButton} onClick={() => { }}>
-            <img src={plus} alt="Новый" className={sidebarStyles.actionIcon} />
+        <div className={styles.actions}>
+          <button 
+            type="button" 
+            className={styles.circleButton} 
+            onClick={handleCreatePatent}
+          >
+            <img src={plus} alt="Новый" className={styles.actionIcon} />
           </button>
         </div>
 
-        <nav className={sidebarStyles.nav}>
+        <nav className={styles.nav}>
           {navItems.map(item => (
             <div
               key={item.id}
-              className={sidebarStyles.navItem}
+              className={styles.navItem}
               onMouseEnter={item.id === 'home' ? handleMouseEnterNavItem : undefined}
               onMouseLeave={item.id === 'home' ? handleMouseLeaveNavItem : undefined}
             >
               <NavLink
                 to={item.to}
                 end={item.id === 'home'}
-                onClick={() => setIsSidebarOpen(false)} // Закрыть меню при клике
+                onClick={() => setIsSidebarOpen(false)} 
                 className={({ isActive }) =>
-                  `${sidebarStyles.navButton} ${isActive ? sidebarStyles.navButtonActive : ''}`
+                  `${styles.navButton} ${isActive ? styles.navButtonActive : ''}`
                 }
               >
-                <img src={item.icon} alt={item.label} className={sidebarStyles.navIcon} />
+                <img src={item.icon} alt={item.label} className={styles.navIcon} />
               </NavLink>
               
-              <span className={sidebarStyles.navLabel}>{item.label}</span>
+              <span className={styles.navLabel}>{item.label}</span>
             </div>
           ))}
         </nav>
 
-        <div className={sidebarStyles.actions}>
-          <Link to="/profile" className={sidebarStyles.circleButton} onClick={() => setIsSidebarOpen(false)}>
-            <img src={user} alt="Профиль" className={sidebarStyles.actionIcon} />
+        <div className={styles.actions}>
+          <Link to="/profile" className={styles.circleButton} onClick={() => setIsSidebarOpen(false)}>
+            <img src={user} alt="Профиль" className={styles.actionIcon} />
           </Link>
         </div>
       </aside>
 
       <div
-        className={`${sidebarStyles.hoverPanel} ${(isHomePanelOpen || isPanelPinned) ? sidebarStyles.active : ''}`}
+        className={`${styles.hoverPanel} ${(isHomePanelOpen || isPanelPinned) ? styles.active : ''}`}
         onMouseEnter={handleMouseEnterPanel}
         onMouseLeave={handleMouseLeavePanel}
       >
-        <HomeHoverPanel isPinned={isPanelPinned} onTogglePin={togglePin} />
+        <HomeHoverPanel
+          isPinned={isPanelPinned}
+          onTogglePin={togglePin}
+          refreshFlag={refreshFlag}
+        />
       </div>
     </>
   );

@@ -18,6 +18,7 @@ import WorkspaceMain from './features/workspace/pages/WorkspaceMain';
 import NotFound from'./features/not_found/pages/NotFound';
 
 import './App.css';
+import PatentCreation from './features/patent_creation/pages/PatentCreation';
 
 export default function App() {
   return (
@@ -35,7 +36,7 @@ export default function App() {
           <Route index element={<WorkspaceMain />} />
           <Route path="documentation" element={<div>Документация</div>}/>
           <Route path="questions" element={<FAQ />}/>
-          <Route path="patents/:id" element={<div>Патент</div>} />
+          <Route path="patent-creation" element={<PatentCreation />} />
         </Route>
         <Route path="profile" element={<div>Профиль</div>} />
       </Route>

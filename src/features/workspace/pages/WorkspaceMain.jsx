@@ -9,10 +9,10 @@ function WorkspaceMain() {
         <h1 className={styles.title}>Formulist</h1>
 
         <p className={styles.subtitle}>
-          Проверь уникальность своей идеи с помощью Formulist уже сейчас!
+          Проверь уникальность своей идеи!
         </p>
         
-        <Link to="/signin" className={styles.btn}>
+        <Link to="/workspace/patent-creation" className={styles.btn}>
           Создать патент
         </Link>
       </div>

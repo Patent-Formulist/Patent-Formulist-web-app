@@ -1,6 +1,6 @@
 .main {
-  margin-left: 72px; 
-  padding: 24px;     
+  margin-left: 272px;
+  margin-right: 72px; 
   min-height: 100vh; 
   box-sizing: border-box;
 }
