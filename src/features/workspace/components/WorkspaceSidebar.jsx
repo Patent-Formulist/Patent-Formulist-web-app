@@ -22,7 +22,6 @@ export default function WorkspaceSidebar() {
   const [isHomePanelOpen, setIsHomePanelOpen] = useState(false);
   const [isPanelPinned, setIsPanelPinned] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
-  const [refreshFlag, setRefreshFlag] = useState(false);
 
   const navigate = useNavigate();
 
@@ -106,7 +105,6 @@ export default function WorkspaceSidebar() {
         <HomeHoverPanel
           isPinned={isPanelPinned}
           onTogglePin={togglePin}
-          refreshFlag={refreshFlag}
         />
       </div>
     </>

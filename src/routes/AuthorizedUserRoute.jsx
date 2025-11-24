@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 import authService from '../services/auth/authService'
 
-function AutorizedUserRoute() {
+function AuthorizedUserRoute() {
     const userAccessToken = authService.getToken();
     const isAuthorized = Boolean(userAccessToken) && userAccessToken.length > 10;
 
@@ -11,4 +11,4 @@ function AutorizedUserRoute() {
         : <Navigate to="/login" replace />
 }
 
-export default AutorizedUserRoute;
+export default AuthorizedUserRoute;
