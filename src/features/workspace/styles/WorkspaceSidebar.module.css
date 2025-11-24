@@ -9,6 +9,7 @@
   align-items: center;
   padding: 16px 0;
   z-index: 1000;
+  transition: width 0.3s ease;
 }
 
 .header {
@@ -144,4 +145,73 @@
   visibility: visible;
   pointer-events: auto;
   transition-delay: 0s;
+}
+
+@media (max-width: 600px) {
+  .hoverPanel {
+    left: 0;
+    width: 100%;
+    height: 300px;
+    bottom: auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+}
+
+.mobileMenuButton {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  z-index: 1500;
+  cursor: pointer;
+}
+
+.mobileMenuButton img {
+  width: 24px;
+  height: 24px;
+}
+
+@media (max-width: 600px) {
+  .mobileMenuButton {
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    .sidebar {
+      width: 0;
+      padding: 0;
+      overflow: hidden; 
+      background-color: white;
+      box-shadow: 2px 0 12px rgba(49, 100, 146, 0.85);
+      transition: width 0.3s ease, background-color 0.3s ease, padding 0.3s ease;
+      z-index: 1400;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sidebarOpen {
+      width: 220px;
+      padding: 16px 8px; 
+    }
+  }
+
+  .navButton {
+    width: 48px;
+    height: 48px;
+  }
+
+  .navButton:hover {
+    background-color: rgba(49, 100, 146, 0.25);
+    transform: translateY(0);
+  }
+
+  .circleButton {
+    width: 48px;
+    height: 48px;
+  }
 }

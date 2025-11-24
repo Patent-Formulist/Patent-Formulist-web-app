@@ -4,3 +4,10 @@
   min-height: 100vh; 
   box-sizing: border-box;
 }
+
+@media (max-width: 600px) {
+  .main {
+    margin-left: 0;
+    padding: 40px;
+  }
+}
