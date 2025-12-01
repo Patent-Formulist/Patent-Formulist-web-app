@@ -1,93 +1,163 @@
-import { v4 as uuidv4 } from 'uuid';
-
 import { API_AUTH_ENDPOINTS } from '../apiConfig';
 
 class AuthService {
-    getDeviceId() {
-        let deviceId = localStorage.getItem('device_id');
 
-        if (!deviceId) {
-            deviceId = uuidv4();
-            localStorage.setItem('device_id', deviceId);
-        }
-
-        return deviceId;
+    saveTokens(accessToken, refreshToken) {
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('refresh_token', refreshToken);
     }
 
-    async login(login, password) {
+    getAccessToken() {
+        return localStorage.getItem('access_token');
+    }
+
+    getRefreshToken() {
+        return localStorage.getItem('refresh_token');
+    }
+
+    clearTokens() {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+    }
+
+    async login(email, password) {
         const response = await fetch(
             API_AUTH_ENDPOINTS.LOGIN, 
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-device-id': this.getDeviceId()
                 },
-                body: JSON.stringify({ login, password }),
+                body: JSON.stringify({ email, password }),
             }
         );
 
-        let data = '';
-        try {
-            data = await response.json();
-        } catch {
-            throw new Error('Ошибка парсинга ответа');
-        }
-
         if (!response.ok) {
-            if (response.status === 422 && data.detail) {
-                throw new Error(
-                    Array.isArray(data.detail) ? data.detail.map(d => d.msg).join('; ') : data.detail
-                );
-            }
+            if (response.status == 500)
+                throw new Error("Ошибка сервера");
             throw new Error('Неверный логин или пароль');
         }
 
+        const data = await response.json();
+        this.saveTokens(data.access, data.refresh);
         return data;
     }
 
-    async register(login, password) {
+    async register(email, password) {
+        
         const response = await fetch(
             API_AUTH_ENDPOINTS.REGISTER, 
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-device-id': this.getDeviceId()
                 },
-                body: JSON.stringify({ login, password }),
+                body: JSON.stringify({ email, password }),
             }
         );
 
-        let data = '';
-        try {
-            data = await response.json();
-        } catch {
-            throw new Error('Ошибка парсинга ответа');
-        }
-
         if (!response.ok) {
-            if (response.status === 422 && data.detail) {
-                throw new Error(
-                    Array.isArray(data.detail) ? data.detail.map(d => d.msg).join('; ') : data.detail
-                );
+            switch (response.status) {
+                case 400:
+                    throw new Error("Попробуйте другую почту");
+                case 422:
+                    throw new Error("Введите почту в формате user@example.com");
+                default:
+                    throw new Error("Ошибка сервера");
             }
-            throw new Error('Ошибка регистрации');
         }
 
+        const data = await response.json();
+        this.saveTokens(data.access, data.refresh);
         return data;
     }
 
-    saveToken(token) {
-        localStorage.setItem('access_token', token);
+    async refreshAccessToken() {
+        const refreshToken = this.getRefreshToken();
+        if (!refreshToken) {
+            throw new Error('No refresh token');
+        }
+
+        const response = await fetch(API_AUTH_ENDPOINTS.REFRESH, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${refreshToken}`,
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            this.clearTokens();
+            window.location.href = '/login'; 
+            throw new Error('Refresh failed');
+        }
+
+        const data = await response.json();
+        this.saveTokens(data.access, data.refresh);
+        return data.access;
     }
 
-    getToken() {
-        return localStorage.getItem('access_token');
+    async logout() {
+        try {
+            const token = this.getAccessToken();
+            await fetch(API_AUTH_ENDPOINTS.LOGOUT, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+        } finally {
+            this.clearTokens();
+            window.location.href = '/login';
+        }
     }
 
-    removeToken() {
-        localStorage.removeItem('access_token');
+    async validate() {
+        const token = this.getAccessToken();
+        if (!token) return false;
+
+        const response = await fetch(API_AUTH_ENDPOINTS.VALIDATE, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        return response.ok;
+    }
+
+    async authenticatedFetch(url, options = {}) {
+        const token = this.getAccessToken();
+        const config = {
+            ...options,
+            headers: {
+                ...options.headers,
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            }
+        };
+
+        let response = await fetch(url, config);
+
+        if (response.status === 401 && !options._isRetry) {
+            try {
+                const newAccess = await this.refreshAccessToken();
+                const retryConfig = {
+                    ...config,
+                    headers: {
+                        ...config.headers,
+                        'Authorization': `Bearer ${newAccess}`,
+                    },
+                    _isRetry: true,
+                };
+                response = await fetch(url, retryConfig);
+            } catch (error) {
+                window.location.href = '/login';
+                throw error;
+            }
+        }
+        return response;
     }
 }
 

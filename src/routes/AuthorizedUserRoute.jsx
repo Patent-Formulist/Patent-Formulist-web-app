@@ -1,14 +1,28 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-import authService from '../services/auth/authService'
+import authService from '../services/auth/authService';
 
 function AuthorizedUserRoute() {
-    const userAccessToken = authService.getToken();
-    const isAuthorized = Boolean(userAccessToken) && userAccessToken.length > 10;
+  const [isAuthorized, setIsAuthorized] = useState(null);
 
-    return isAuthorized
-        ? <Outlet />
-        : <Navigate to="/login" replace />
+  useEffect(() => {
+    const check = async () => {
+      try {
+        const ok = await authService.validate();
+        setIsAuthorized(ok);
+      } catch {
+        setIsAuthorized(false);
+      }
+    };
+    check();
+  }, []);
+
+  if (isAuthorized === null) {
+    return <div>Проверка авторизации...</div>;
+  }
+
+  return isAuthorized ? <Outlet /> : <Navigate to="/login" replace />;
 }
 
 export default AuthorizedUserRoute;

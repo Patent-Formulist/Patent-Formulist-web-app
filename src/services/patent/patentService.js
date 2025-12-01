@@ -10,7 +10,7 @@ class PatentService {
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${authService.getToken()}`, 
+                    'Authorization': `Bearer ${authService.getAccessToken()}`, 
                     'Accept': 'application/json'
                 },
             }
@@ -20,7 +20,7 @@ class PatentService {
         try {
             data = await response.json();
         } catch {
-            throw new Error('Ошибка обработки данных от сервера');
+            throw new Error('Ошибка получения данных');
         }
 
         if (!response.ok) {
@@ -52,7 +52,7 @@ class PatentService {
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${authService.getToken()}`,
+                    'Authorization': `Bearer ${authService.getAccessToken()}`,
                     'Accept': 'application/json',
                 },
             }
@@ -62,7 +62,7 @@ class PatentService {
         try {
             data = await response.json();
         } catch {
-            throw new Error('Ошибка обработки данных от сервера');
+            throw new Error('Ошибка получения данных');
         }
 
         if (!response.ok) {
@@ -90,7 +90,7 @@ class PatentService {
             {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${authService.getToken()}`,
+                    'Authorization': `Bearer ${authService.getAccessToken()}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
@@ -102,7 +102,7 @@ class PatentService {
         try {
             data = await response.json();
         } catch {
-            throw new Error('Ошибка обработки данных от сервера');
+            throw new Error('Ошибка получения данных');
         }
 
         if (!response.ok) {
@@ -133,7 +133,7 @@ class PatentService {
             {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${authService.getToken()}`,
+                    'Authorization': `Bearer ${authService.getAccessToken()}`,
                     'Accept': 'application/json',
                 },
             }
@@ -143,7 +143,7 @@ class PatentService {
         try {
             data = await response.json();
         } catch {
-            throw new Error('Ошибка обработки данных от сервера');
+            throw new Error('Ошибка получения данных');
         }
 
         if (!response.ok) {
@@ -172,7 +172,7 @@ class PatentService {
             {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authService.getToken()}`, 
+                    'Authorization': `Bearer ${authService.getAccessToken()}`, 
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
@@ -186,7 +186,7 @@ class PatentService {
         try {
             data = await response.json();
         } catch {
-            throw new Error('Ошибка обработки данных от сервера');
+            throw new Error('Ошибка получения данных');
         }
 
         if (!response.ok) {

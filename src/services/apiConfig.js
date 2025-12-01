@@ -1,14 +1,17 @@
-const API_BASE_URL = '/api';
+const URL = '/api';
 
 export const API_AUTH_ENDPOINTS = {
-  LOGIN:    `${API_BASE_URL}/login`,
-  REGISTER: `${API_BASE_URL}/registration`,
+  LOGIN:    `${URL}/login`,
+  REGISTER: `${URL}/registration`,
+  REFRESH:  `${URL}/refresh`,
+  LOGOUT:   `${URL}/logout`,
+  VALIDATE: `${URL}/validate`
 };
 
 export const API_PATENT_ENDPOINTS = {
-  PATENT_CREATE:  `${API_BASE_URL}/patent`,
-  PATENT_GET_ALL: `${API_BASE_URL}/patents`,
-  PATENT_GET:     (uuid) => `${API_BASE_URL}/patent/${uuid}`,
-  PATENT_UPDATE:  (uuid) => `${API_BASE_URL}/patent/${uuid}`,
-  PATENT_DELETE:  (uuid) => `${API_BASE_URL}/patent/${uuid}`,
+  PATENT_CREATE:  `${URL}/patent`,
+  PATENT_GET_ALL: `${URL}/patents`,
+  PATENT_GET:     (uuid) => `${URL}/patent/${uuid}`,
+  PATENT_UPDATE:  (uuid) => `${URL}/patent/${uuid}`,
+  PATENT_DELETE:  (uuid) => `${URL}/patent/${uuid}`,
 };

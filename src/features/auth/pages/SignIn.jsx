@@ -15,35 +15,34 @@ function SignIn() {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
-    setLoading(true)
-    setErrorMessage('')
+    event.preventDefault();
+    setLoading(true);
+    setErrorMessage('');
 
-    if (login.length < 4) {
-      setErrorMessage('Логин должен быть не менее 4 символов')
-      loginRef.current && loginRef.current.focus()
-      setLoading(false)
-      return
+    if (login.length < 5) {
+        setErrorMessage('Логин должен быть не менее 5 символов');
+        loginRef.current && loginRef.current.focus();
+        setLoading(false);
+        return;
     }
     if (password.length < 8) {
-      setErrorMessage('Пароль должен быть не менее 8 символов')
-      setLoading(false)
-      return
+        setErrorMessage('Пароль должен быть не менее 8 символов');
+        setLoading(false);
+        return;
     }
     if (password !== confirmPassword) {
-      setErrorMessage('Пароли не совпадают')
-      setLoading(false)
-      return
+        setErrorMessage('Пароли не совпадают');
+        setLoading(false);
+        return;
     }
 
     try {
-      const data = await authService.register(login, password)
-      authService.saveToken(data.access)
-      navigate('/workspace')
+        await authService.register(login, password); 
+        navigate('/workspace');
     } catch (error) {
-      setErrorMessage(error.message || 'Ошибка сети')
+        setErrorMessage(error.message || 'Ошибка сети');
     } finally {
-      setLoading(false)
+        setLoading(false);
     }
   }
 
@@ -51,11 +50,11 @@ function SignIn() {
     <div className={styles.page}>
       <h1>Регистрация</h1>
       <form className={styles.form} onSubmit={handleSubmit}>
-        <label htmlFor="signup-login">Логин</label>
+        <label htmlFor="signup-login">Почта</label>
         <input
           id="signup-login"
           type="text"
-          placeholder="Введите логин"
+          placeholder="Введите почту"
           value={login}
           onChange={(e) => setLogin(e.target.value)}
           ref={loginRef}

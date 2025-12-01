@@ -13,18 +13,17 @@ function LogIn() {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
-    setLoading(true)
-    setErrorMessage('')
+    event.preventDefault();
+    setLoading(true);
+    setErrorMessage('');
 
     try {
-      const data = await authService.login(login, password)
-      authService.saveToken(data.access)
-      navigate('/workspace')
+        await authService.login(login, password); 
+        navigate('/workspace');
     } catch (error) {
-      setErrorMessage(error.message || 'Ошибка сети')
+        setErrorMessage(error.message || 'Ошибка сети');
     } finally {
-      setLoading(false)
+        setLoading(false);
     }
   }
 
@@ -32,11 +31,11 @@ function LogIn() {
     <div className={styles.page}>
       <h1>Вход</h1>
       <form className={styles.form} onSubmit={handleSubmit}>
-        <label htmlFor="login-username">Логин</label>
+        <label htmlFor="login-username">Почта</label>
         <input
           id="login-username"
           type="text"
-          placeholder="Введите логин"
+          placeholder="Введите почту"
           value={login}
           onChange={(e) => setLogin(e.target.value)}
           required
