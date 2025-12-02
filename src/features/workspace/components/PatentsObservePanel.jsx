@@ -5,20 +5,16 @@ import PatentButton from './PatentButton'
 
 import patentService from '../../../services/patent/patentService'
 
-import styles from '../styles/HomeHoverPanel.module.css'
+import styles from '../styles/PatentsObservePanel.module.css'
 
 import pin from '../../../resources/pin.svg'
 import activePin from '../../../resources/activePin.svg'
 import magnifier from '../../../resources/magnifier.svg'
-import paper from '../../../resources/paper.svg'
 
-export default function HomeHoverPanel({ isPinned, onTogglePin }) {
+export default function PatentsObservePanel({ isPinned, onTogglePin }) {
   const [searchText, setSearchText] = useState('')
   const [activePatentId, setActivePatentId] = useState(null)
   const [patents, setPatents] = useState([])
-
-  const [isCreating, setIsCreating] = useState(false)
-  const [newPatentName, setNewPatentName] = useState('')
 
   const navigate = useNavigate()
 
@@ -40,21 +36,6 @@ export default function HomeHoverPanel({ isPinned, onTogglePin }) {
   const onPatentClick = (id) => {
     setActivePatentId(id)
     navigate(`/workspace/patents/${id}`)
-  }
-
-  const onCreateClick = async () => {
-    if (newPatentName.trim() === '') {
-      alert('Имя патента не может быть пустым')
-      return
-    }
-    try {
-      await patentService.createPatent(newPatentName.trim())
-      setNewPatentName('')
-      setIsCreating(false)
-      await loadPatents() 
-    } catch (e) {
-      alert(`Ошибка создания патента: ${e.message}`)
-    }
   }
 
   return (
@@ -84,35 +65,12 @@ export default function HomeHoverPanel({ isPinned, onTogglePin }) {
         />
       </div>
 
-      {isCreating ? (
-        <div className={styles.newPatentForm}>
-          <input
-            type="text"
-            placeholder="Введите имя патента"
-            value={newPatentName}
-            onChange={(e) => setNewPatentName(e.target.value)}
-            className={styles.newPatentInput}
-          />
-          <div className={styles.newPatentButtons}>
-            <button onClick={onCreateClick} className={styles.createPatentButton}>
-              Создать
-            </button>
-            <button
-              onClick={() => {
-                setIsCreating(false)
-                setNewPatentName('')
-              }}
-              className={styles.cancelPatentButton}
-            >
-              Отмена
-            </button>
-          </div>
-        </div>
-      ) : (
-        <button className={styles.newPatentButton} onClick={() => setIsCreating(true)}>
-          Новый патент
-        </button>
-      )}
+      <button 
+        className={styles.newPatentButton} 
+        onClick={() => navigate('/workspace/patent-creation')}
+      >
+        Новый патент
+      </button>
 
       <div className={styles.patentList}>
         {patents

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 
 import styles from '../styles/WorkspaceSidebar.module.css';
-import HomeHoverPanel from './HomeHoverPanel';
+import PatentsObservePanel from './PatentsObservePanel'
 
 import logo from '../../../resources/logo.svg';
 import home from '../../../resources/home.svg';
@@ -102,7 +102,7 @@ export default function WorkspaceSidebar() {
         onMouseEnter={handleMouseEnterPanel}
         onMouseLeave={handleMouseLeavePanel}
       >
-        <HomeHoverPanel
+        <PatentsObservePanel
           isPinned={isPanelPinned}
           onTogglePin={togglePin}
         />
