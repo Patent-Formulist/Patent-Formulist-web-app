@@ -36,6 +36,16 @@ export default function PatentsObservePanel({ isPinned, onTogglePin }) {
     }
   }
 
+  const filteredPatents = patents.filter((patent) => {
+    if (!searchText.trim()) return true 
+
+    const query = searchText.toLowerCase()
+    const name = patent.name?.toLowerCase() || ''
+    const searchQuery = patent.search_query?.toLowerCase() || ''
+
+    return name.includes(query) || searchQuery.includes(query)
+  })
+
   return (
     <div className={styles.hoverPanelContent}>
       <header className={styles.panelHeader}>
@@ -56,7 +66,7 @@ export default function PatentsObservePanel({ isPinned, onTogglePin }) {
         <img src={magnifier} alt="Поиск" className={styles.icon} />
         <input
           type="text"
-          placeholder="Поиск"
+          placeholder="Поиск по названию или ключевым словам"
           value={searchText}
           onChange={onSearchChange}
           className={styles.searchInput}
@@ -71,9 +81,8 @@ export default function PatentsObservePanel({ isPinned, onTogglePin }) {
       </button>
 
       <div className={styles.patentList}>
-        {patents
-          .filter((p) => p.name && p.name.toLowerCase().includes(searchText.toLowerCase()))
-          .map((patent) => (
+        {filteredPatents.length > 0 ? (
+          filteredPatents.map((patent) => (
             <PatentButton
               key={patent.id}
               patent={patent}
@@ -82,7 +91,12 @@ export default function PatentsObservePanel({ isPinned, onTogglePin }) {
               onDeleted={() => handleDeletePatent(patent.id)}
               onEdit={(id) => navigate(`/workspace/patents/${id}/edit`)}
             />
-          ))}
+          ))
+        ) : (
+          <div className={styles.emptyState}>
+            Патенты не найдены
+          </div>
+        )}
       </div>
     </div>
   )

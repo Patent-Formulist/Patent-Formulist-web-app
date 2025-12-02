@@ -106,3 +106,10 @@
   pointer-events: none;
   transition: inherit;
 }
+
+.emptyState {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgba(0, 51, 102, 0.5);
+  font-size: 14px;
+}
