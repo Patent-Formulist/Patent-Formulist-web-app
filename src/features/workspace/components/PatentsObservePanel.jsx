@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { usePatents } from '../../../contexts/PatentsContext'
 
 import PatentButton from './PatentButton'
-
-import patentService from '../../../services/patent/patentService'
 
 import styles from '../styles/PatentsObservePanel.module.css'
 
@@ -14,28 +13,27 @@ import magnifier from '../../../resources/magnifier.svg'
 export default function PatentsObservePanel({ isPinned, onTogglePin }) {
   const [searchText, setSearchText] = useState('')
   const [activePatentId, setActivePatentId] = useState(null)
-  const [patents, setPatents] = useState([])
 
   const navigate = useNavigate()
-
-  const loadPatents = async () => {
-    try {
-      const data = await patentService.getUserPatents()
-      setPatents(data)
-    } catch (e) {
-      alert(`Ошибка загрузки патентов: ${e.message}`)
-    }
-  }
+  const { patents, loadPatents, deletePatent } = usePatents()
 
   useEffect(() => {
     loadPatents()
-  }, [])
+  }, [loadPatents])
 
   const onSearchChange = (e) => setSearchText(e.target.value)
 
   const onPatentClick = (id) => {
     setActivePatentId(id)
     navigate(`/workspace/patents/${id}`)
+  }
+
+  const handleDeletePatent = async (id) => {
+    try {
+      await deletePatent(id)
+    } catch (e) {
+      alert(`Ошибка удаления патента: ${e.message}`)
+    }
   }
 
   return (
@@ -81,7 +79,7 @@ export default function PatentsObservePanel({ isPinned, onTogglePin }) {
               patent={patent}
               isActive={patent.id === activePatentId}
               onClick={onPatentClick}
-              onDeleted={loadPatents}
+              onDeleted={() => handleDeletePatent(patent.id)}
               onEdit={(id) => navigate(`/workspace/patents/${id}/edit`)}
             />
           ))}
