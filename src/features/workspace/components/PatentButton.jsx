@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { usePatents } from '../../../contexts/PatentsContext'
 
 import styles from '../styles/PatentButton.module.css'
@@ -15,6 +15,7 @@ export default function PatentButton({ patent, isActive, isPanelVisible }) {
     const triggerRef = useRef(null)
     
     const navigate = useNavigate()
+    const location = useLocation()
     const { deletePatent } = usePatents()
 
     useEffect(() => {
@@ -56,7 +57,11 @@ export default function PatentButton({ patent, isActive, isPanelVisible }) {
         e.stopPropagation()
         try {
             setMenuVisible(false)
+            const isOnPatentPage = location.pathname.includes(`/patents/${patent.id}`)
             await deletePatent(patent.id)
+            if (isOnPatentPage) {
+                navigate('/workspace')
+            }
         } catch (e) {
             alert(`Ошибка удаления патента: ${e.message}`)
         }
