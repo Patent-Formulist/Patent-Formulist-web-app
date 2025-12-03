@@ -43,9 +43,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition:
-    background-color 0.15s ease-in-out,
-    transform 0.1s ease-in-out;
+  transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
 }
 
 .circleButton:hover {
@@ -62,7 +60,6 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 0;
   margin-bottom: auto;
   width: 100%;
 }
@@ -85,9 +82,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition:
-    background-color 0.15s ease-in-out,
-    transform 0.1s ease-in-out;
+  transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
 }
 
 .navButton:hover {
@@ -125,18 +120,12 @@
   width: 200px;
   background-color: rgba(49, 100, 146, 0.1);
   z-index: 1500;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 16px;
   box-sizing: border-box;
   transform: translateX(-100%);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition:
-    transform 0.3s ease-out,
-    opacity 0.3s ease-out,
-    visibility 0s linear 0.3s;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0s linear 0.3s;
 }
 
 .hoverPanel.active {
@@ -175,25 +164,22 @@
     width: 100%;
     height: 300px;
     bottom: auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   .sidebar {
     width: 0;
     padding: 0;
-    overflow: hidden; 
+    overflow: hidden;
     background-color: white;
     box-shadow: 2px 0 12px rgba(49, 100, 146, 0.85);
     transition: width 0.3s ease, background-color 0.3s ease, padding 0.3s ease;
     z-index: 1400;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
 
   .sidebarOpen {
     width: 220px;
-    padding: 16px 8px; 
+    padding: 16px 8px;
   }
 
   .navButton {

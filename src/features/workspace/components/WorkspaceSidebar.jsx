@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 
 import styles from '../styles/WorkspaceSidebar.module.css';
-import PatentsObservePanel from './PatentsObservePanel'
+import PatentsPanel from './PatentsPanel'
 
 import logo from '../../../resources/logo.svg';
 import home from '../../../resources/home.svg';
@@ -37,6 +37,8 @@ export default function WorkspaceSidebar() {
   };
 
   const toggleSidebar = () => setIsSidebarOpen(open => !open);
+
+  const isPanelVisible = isHomePanelOpen || isPanelPinned;
 
   return (
     <>
@@ -98,13 +100,14 @@ export default function WorkspaceSidebar() {
       </aside>
 
       <div
-        className={`${styles.hoverPanel} ${(isHomePanelOpen || isPanelPinned) ? styles.active : ''}`}
+        className={`${styles.hoverPanel} ${isPanelVisible ? styles.active : ''}`}
         onMouseEnter={handleMouseEnterPanel}
         onMouseLeave={handleMouseLeavePanel}
       >
-        <PatentsObservePanel
+        <PatentsPanel
           isPinned={isPanelPinned}
           onTogglePin={togglePin}
+          isPanelVisible={isPanelVisible}
         />
       </div>
     </>

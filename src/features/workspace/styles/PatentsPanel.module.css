@@ -7,6 +7,7 @@
   flex-direction: column;
   color: #234b7a;
   background-color: white;
+  overflow: hidden;
 }
 
 .panelHeader {
@@ -50,8 +51,8 @@
   font-size: 14px;
   color: #234b7a;
   background: transparent;
-  min-width: 0; 
-  overflow: hidden; 
+  min-width: 0;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -74,6 +75,22 @@
 .patentList {
   flex: 1;
   overflow-y: auto;
+  overflow-x: visible;
+  margin: 0 -16px;
+  padding: 0 16px;
+}
+
+.patentList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.patentList::-webkit-scrollbar-thumb {
+  background-color: rgba(49, 100, 146, 0.3);
+  border-radius: 3px;
+}
+
+.patentList::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(49, 100, 146, 0.5);
 }
 
 .pinButton {
@@ -104,7 +121,6 @@
   width: 20px;
   height: 20px;
   pointer-events: none;
-  transition: inherit;
 }
 
 .emptyState {

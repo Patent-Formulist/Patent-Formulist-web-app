@@ -1,40 +1,27 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { usePatents } from '../../../contexts/PatentsContext'
 
 import PatentButton from './PatentButton'
 
-import styles from '../styles/PatentsObservePanel.module.css'
+import styles from '../styles/PatentsPanel.module.css'
 
 import pin from '../../../resources/pin.svg'
 import activePin from '../../../resources/activePin.svg'
 import magnifier from '../../../resources/magnifier.svg'
 
-export default function PatentsObservePanel({ isPinned, onTogglePin }) {
+export default function PatentsObservePanel({ isPinned, onTogglePin, isPanelVisible }) {
   const [searchText, setSearchText] = useState('')
-  const [activePatentId, setActivePatentId] = useState(null)
 
   const navigate = useNavigate()
-  const { patents, loadPatents, deletePatent } = usePatents()
+  const location = useLocation()
+  const { patents, loadPatents } = usePatents()
 
   useEffect(() => {
     loadPatents()
   }, [loadPatents])
 
   const onSearchChange = (e) => setSearchText(e.target.value)
-
-  const onPatentClick = (id) => {
-    setActivePatentId(id)
-    navigate(`/workspace/patents/${id}`)
-  }
-
-  const handleDeletePatent = async (id) => {
-    try {
-      await deletePatent(id)
-    } catch (e) {
-      alert(`Ошибка удаления патента: ${e.message}`)
-    }
-  }
 
   const filteredPatents = patents.filter((patent) => {
     if (!searchText.trim()) return true 
@@ -45,6 +32,8 @@ export default function PatentsObservePanel({ isPinned, onTogglePin }) {
 
     return name.includes(query) || searchQuery.includes(query)
   })
+
+  const activePatentId = location.pathname.match(/\/patents\/([^\/]+)/)?.[1]
 
   return (
     <div className={styles.hoverPanelContent}>
@@ -87,9 +76,7 @@ export default function PatentsObservePanel({ isPinned, onTogglePin }) {
               key={patent.id}
               patent={patent}
               isActive={patent.id === activePatentId}
-              onClick={onPatentClick}
-              onDeleted={() => handleDeletePatent(patent.id)}
-              onEdit={(id) => navigate(`/workspace/patents/${id}/edit`)}
+              isPanelVisible={isPanelVisible}
             />
           ))
         ) : (
