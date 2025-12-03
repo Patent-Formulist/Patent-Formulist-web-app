@@ -1,11 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
 
-import patentService from '../../../services/patent/patentService'
-
 import styles from '../styles/PatentButton.module.css'
 
 import dots from '../../../resources/dots.svg'
-import bin from '../../../resources/bin.svg'; 
+import bin from '../../../resources/bin.svg'
 
 export default function PatentButton({ patent, isActive, onClick, onDeleted, onEdit }) {
     const [menuVisible, setMenuVisible] = useState(false)
@@ -27,9 +25,8 @@ export default function PatentButton({ patent, isActive, onClick, onDeleted, onE
 
     const onDelete = async () => {
         try {
-            await patentService.deletePatent(patent.id)
             setMenuVisible(false)
-            onDeleted(patent.id)
+            await onDeleted() // УБРАЛ patent.id — он уже передан в замыкании
         } catch (e) {
             alert(`Ошибка удаления патента: ${e.message}`)
         }

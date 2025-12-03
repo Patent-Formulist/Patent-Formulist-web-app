@@ -1,0 +1,218 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: rgba(0, 40, 80, 1);
+  margin-bottom: 40px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 51, 102, 1);
+  margin-bottom: 8px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid rgba(0, 51, 102, 0.3);
+  border-radius: 6px;
+  font-size: 14px;
+  color: rgba(0, 51, 102, 1);
+  background-color: white;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: rgba(0, 51, 102, 0.6);
+}
+
+.input:disabled,
+.textarea:disabled {
+  background-color: rgba(0, 51, 102, 0.05);
+  cursor: not-allowed;
+}
+
+.textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.cancelButton {
+  padding: 12px 24px;
+  background-color: rgba(165, 55, 55, 1);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background-color: rgba(140, 45, 45, 1);
+}
+
+.submitButton {
+  padding: 12px 24px;
+  background-color: rgba(49, 100, 146, 1);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: rgba(35, 75, 122, 1);
+}
+
+.cancelButton:disabled,
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 30px 16px;
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+
+  .form {
+    gap: 16px;
+  }
+
+  .label {
+    font-size: 13px;
+  }
+
+  .input,
+  .textarea {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .buttonGroup {
+    gap: 10px;
+  }
+
+  .cancelButton,
+  .submitButton {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 20px 12px;
+  }
+
+  .title {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+
+  .form {
+    gap: 14px;
+  }
+
+  .label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .input,
+  .textarea {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .buttonGroup {
+    flex-direction: column-reverse;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .container {
+    padding: 16px 10px;
+  }
+
+  .title {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .form {
+    gap: 12px;
+  }
+
+  .label {
+    font-size: 11px;
+  }
+
+  .input,
+  .textarea {
+    font-size: 12px;
+    padding: 7px 8px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .input,
+  .textarea {
+    min-height: 44px; 
+  }
+
+  .cancelButton,
+  .submitButton {
+    min-height: 44px; 
+  }
+}
