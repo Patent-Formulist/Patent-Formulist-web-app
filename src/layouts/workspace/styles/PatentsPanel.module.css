@@ -7,6 +7,7 @@
   flex-direction: column;
   color: #234b7a;
   background-color: white;
+  box-shadow: 2px 0 12px rgba(49, 100, 146, 0.25);
   overflow: hidden;
 }
 

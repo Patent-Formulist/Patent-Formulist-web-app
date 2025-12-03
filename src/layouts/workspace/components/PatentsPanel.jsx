@@ -10,7 +10,7 @@ import pin from '../../../resources/pin.svg'
 import activePin from '../../../resources/activePin.svg'
 import magnifier from '../../../resources/magnifier.svg'
 
-export default function PatentsObservePanel({ isPinned, onTogglePin, isPanelVisible }) {
+export default function PatentsPanel({ isPinned, onTogglePin, isPanelVisible }) {
   const [searchText, setSearchText] = useState('')
 
   const navigate = useNavigate()

@@ -3,8 +3,8 @@ import { PatentsProvider } from './contexts/PatentsContext'
 
 import AuthorizedUserRoute from './routes/AuthorizedUserRoute'
 
-import WelcomeLayout from './features/welcome/layouts/WelcomeLayout'
-import WorkspaceLayout from './features/workspace/layouts/WorkspaceLayout'
+import WelcomeLayout from './layouts/welcome/WelcomeLayout'
+import WorkspaceLayout from './layouts/workspace/WorkspaceLayout'
 
 import Welcome from './features/welcome/pages/Welcome'
 import About from './features/welcome/pages/About'
@@ -14,7 +14,7 @@ import Contacts from './features/welcome/pages/Contacts'
 import LogIn from './features/auth/pages/LogIn'
 import SignIn from './features/auth/pages/SignIn'
 
-import WorkspaceMain from './features/workspace/pages/WorkspaceMain'
+import WorkspaceMain from './layouts/workspace/WorkspaceMain'
 
 import PatentCreation from './features/patent_creation/pages/PatentCreation'
 import PatentEdit from './features/patent_edit/pages/PatentEdit'

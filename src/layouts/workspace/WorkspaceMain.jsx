@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import styles from "../styles/WorkspaceMain.module.css";
+import styles from "./styles/WorkspaceMain.module.css";
 
 function WorkspaceMain() {
   return (
