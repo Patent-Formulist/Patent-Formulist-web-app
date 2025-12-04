@@ -73,7 +73,6 @@ export default function PatentEdit() {
     register, 
     handleSubmit, 
     formState: { errors, isSubmitting },
-    reset,
     setValue
   } = useForm({
     mode: 'onBlur'

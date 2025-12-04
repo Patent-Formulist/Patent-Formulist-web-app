@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { usePatents } from '../../../contexts/PatentsContext'
+import { createPortal } from 'react-dom'
 
 import styles from '../styles/PatentButton.module.css'
 
@@ -10,6 +11,7 @@ import pen from '../../../resources/pen.svg'
 
 export default function PatentButton({ patent, isActive, isPanelVisible }) {
     const [menuVisible, setMenuVisible] = useState(false)
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false)
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 })
     const menuRef = useRef(null)
     const triggerRef = useRef(null)
@@ -21,6 +23,7 @@ export default function PatentButton({ patent, isActive, isPanelVisible }) {
     useEffect(() => {
         if (!isPanelVisible) {
             setMenuVisible(false)
+            setDeleteModalVisible(false)
         }
     }, [isPanelVisible])
 
@@ -39,6 +42,29 @@ export default function PatentButton({ patent, isActive, isPanelVisible }) {
         }
     }, [menuVisible])
 
+    useEffect(() => {
+        if (deleteModalVisible) {
+            document.body.style.overflow = 'hidden'
+            const appRoot = document.getElementById('root')
+            if (appRoot) {
+                appRoot.style.filter = 'blur(4px)'
+            }
+        } else {
+            document.body.style.overflow = 'unset'
+            const appRoot = document.getElementById('root')
+            if (appRoot) {
+                appRoot.style.filter = 'none'
+            }
+        }
+        return () => {
+            document.body.style.overflow = 'unset'
+            const appRoot = document.getElementById('root')
+            if (appRoot) {
+                appRoot.style.filter = 'none'
+            }
+        }
+    }, [deleteModalVisible])
+
     const toggleMenu = (e) => {
         e.stopPropagation()
         
@@ -53,10 +79,15 @@ export default function PatentButton({ patent, isActive, isPanelVisible }) {
         setMenuVisible(!menuVisible)
     }
 
-    const onDelete = async (e) => {
+    const onDeleteClick = (e) => {
         e.stopPropagation()
+        setMenuVisible(false)
+        setDeleteModalVisible(true)
+    }
+
+    const confirmDelete = async () => {
         try {
-            setMenuVisible(false)
+            setDeleteModalVisible(false)
             const isOnPatentPage = location.pathname.includes(`/patents/${patent.id}`)
             await deletePatent(patent.id)
             if (isOnPatentPage) {
@@ -65,6 +96,10 @@ export default function PatentButton({ patent, isActive, isPanelVisible }) {
         } catch (e) {
             alert(`Ошибка удаления патента: ${e.message}`)
         }
+    }
+
+    const cancelDelete = () => {
+        setDeleteModalVisible(false)
     }
 
     const onEditClick = (e) => {
@@ -82,47 +117,80 @@ export default function PatentButton({ patent, isActive, isPanelVisible }) {
     }
 
     return (
-        <div
-            className={`${styles.patentButton} ${isActive ? styles.active : ''}`}
-            onClick={onPatentClick}
-        >
-            <span className={styles.patentName}>{patent.name}</span>
-
+        <>
             <div
-                ref={triggerRef}
-                className={`${styles.menuTrigger} ${menuVisible ? styles.active : ''}`}
-                onClick={toggleMenu}
-                aria-label="Меню патента"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        toggleMenu(e)
-                    }
-                }}
+                className={`${styles.patentButton} ${isActive ? styles.active : ''}`}
+                onClick={onPatentClick}
             >
-                <img src={dots} alt="Меню патента" />
-            </div>
+                <span className={styles.patentName}>{patent.name}</span>
 
-            {menuVisible && (
-                <div 
-                    className={styles.menu} 
-                    ref={menuRef}
-                    style={{
-                        position: 'fixed',
-                        top: `${menuPosition.top}px`,
-                        left: `${menuPosition.left}px`
+                <div
+                    ref={triggerRef}
+                    className={`${styles.menuTrigger} ${menuVisible ? styles.active : ''}`}
+                    onClick={toggleMenu}
+                    aria-label="Меню патента"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            toggleMenu(e)
+                        }
                     }}
                 >
-                    <button className={styles.menuItem} onClick={onEditClick} type="button">
-                        <img src={pen} alt="Редактировать" className={styles.menuItemIcon} />
-                        Редактировать
-                    </button>
-                    <button className={styles.menuItem} onClick={onDelete} type="button">
-                        <img src={bin} alt="Удалить" className={styles.menuItemIcon} />
-                        Удалить
-                    </button>
+                    <img src={dots} alt="Меню патента" />
                 </div>
+
+                {menuVisible && (
+                    <div 
+                        className={styles.menu} 
+                        ref={menuRef}
+                        style={{
+                            position: 'fixed',
+                            top: `${menuPosition.top}px`,
+                            left: `${menuPosition.left}px`
+                        }}
+                    >
+                        <button className={styles.menuItem} onClick={onEditClick} type="button">
+                            <img src={pen} alt="Редактировать" className={styles.menuItemIcon} />
+                            Редактировать
+                        </button>
+                        <button className={styles.menuItem} onClick={onDeleteClick} type="button">
+                            <img src={bin} alt="Удалить" className={styles.menuItemIcon} />
+                            Удалить
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            {deleteModalVisible && createPortal(
+                <div className={styles.modalOverlay} onClick={cancelDelete}>
+                    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                        <h3 className={styles.modalTitle}>Удаление патента</h3>
+                        <p className={styles.modalText}>
+                            Вы уверены, что хотите удалить патент "<strong>{patent.name}</strong>"?
+                        </p>
+                        <p className={styles.modalWarning}>
+                            Это действие необратимо.
+                        </p>
+                        <div className={styles.modalButtons}>
+                            <button 
+                                className={styles.modalCancelButton} 
+                                onClick={cancelDelete}
+                                type="button"
+                            >
+                                Нет
+                            </button>
+                            <button 
+                                className={styles.modalConfirmButton} 
+                                onClick={confirmDelete}
+                                type="button"
+                            >
+                                Да
+                            </button>
+                        </div>
+                    </div>
+                </div>,
+                document.body
             )}
-        </div>
+        </>
     )
 }
