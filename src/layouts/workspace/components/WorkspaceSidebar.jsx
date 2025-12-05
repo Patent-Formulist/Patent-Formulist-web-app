@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 
 import styles from '../styles/WorkspaceSidebar.module.css';
-import PatentsPanel from './PatentsPanel'
+import PatentsPanel from './PatentsPanel';
 
 import logo from '../../../resources/logo.svg';
 import home from '../../../resources/home.svg';
@@ -10,7 +10,7 @@ import book from '../../../resources/book.svg';
 import question from '../../../resources/question.svg';
 import plus from '../../../resources/plus.svg';
 import user from '../../../resources/user.svg';
-import menu from '../../../resources/funcs.svg'; 
+import menu from '../../../resources/funcs.svg';
 
 const navItems = [
   { id: 'home', to: '/workspace', icon: home, label: 'Главная' },
@@ -21,7 +21,7 @@ const navItems = [
 export default function WorkspaceSidebar() {
   const [isHomePanelOpen, setIsHomePanelOpen] = useState(false);
   const [isPanelPinned, setIsPanelPinned] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -51,17 +51,25 @@ export default function WorkspaceSidebar() {
         <img src={menu} alt="Меню" />
       </button>
 
-      <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
+      <aside
+        className={`${styles.sidebar} ${
+          isSidebarOpen ? styles.sidebarOpen : ''
+        } ${isPanelVisible ? styles.sidebarNoShadow : ''}`}
+      >
         <header className={styles.header}>
-          <Link to="/workspace" className={styles.logoLink} onClick={() => setIsSidebarOpen(false)}>
+          <Link
+            to="/workspace"
+            className={styles.logoLink}
+            onClick={() => setIsSidebarOpen(false)}
+          >
             <img src={logo} alt="Логотип" className={styles.logo} />
           </Link>
         </header>
 
         <div className={styles.actions}>
-          <button 
-            type="button" 
-            className={styles.circleButton} 
+          <button
+            type="button"
+            className={styles.circleButton}
             onClick={handleCreatePatent}
           >
             <img src={plus} alt="Новый" className={styles.actionIcon} />
@@ -79,21 +87,25 @@ export default function WorkspaceSidebar() {
               <NavLink
                 to={item.to}
                 end={item.id === 'home'}
-                onClick={() => setIsSidebarOpen(false)} 
+                onClick={() => setIsSidebarOpen(false)}
                 className={({ isActive }) =>
                   `${styles.navButton} ${isActive ? styles.navButtonActive : ''}`
                 }
               >
                 <img src={item.icon} alt={item.label} className={styles.navIcon} />
               </NavLink>
-              
+
               <span className={styles.navLabel}>{item.label}</span>
             </div>
           ))}
         </nav>
 
         <div className={styles.actions}>
-          <Link to="/profile" className={styles.circleButton} onClick={() => setIsSidebarOpen(false)}>
+          <Link
+            to="/profile"
+            className={styles.circleButton}
+            onClick={() => setIsSidebarOpen(false)}
+          >
             <img src={user} alt="Профиль" className={styles.actionIcon} />
           </Link>
         </div>
