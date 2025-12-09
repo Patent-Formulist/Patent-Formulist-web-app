@@ -1,0 +1,11 @@
+.container {
+  padding: 24px;
+}
+
+.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: rgba(0, 51, 102, 1);
+  margin-bottom: 24px;
+}

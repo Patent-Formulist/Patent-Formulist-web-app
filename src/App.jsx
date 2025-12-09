@@ -5,6 +5,7 @@ import AuthorizedUserRoute from './routes/AuthorizedUserRoute'
 
 import WelcomeLayout from './layouts/welcome/WelcomeLayout'
 import WorkspaceLayout from './layouts/workspace/WorkspaceLayout'
+import PatentAnalogLayout from './layouts/get_analog/PatentAnalogLayout'
 
 import Welcome from './features/welcome/pages/Welcome'
 import About from './features/welcome/pages/About'
@@ -41,8 +42,8 @@ export default function App() {
             <Route path='documentation' element={<div>Документация</div>}/>
             <Route path='questions' element={<FAQ />}/>
             <Route path='patent-creation' element={<PatentCreation />} />
-            <Route path='patents/:id' element={<div>Патент</div>}/>
             <Route path='patents/:id/edit' element={<PatentEdit />}/>
+            <Route path='patents/:id' element={<PatentAnalogLayout />} />
           </Route>
           <Route path='profile' element={<div>Профиль</div>} />
         </Route>
