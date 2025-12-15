@@ -21,6 +21,9 @@ import WorkspaceMain from './layouts/workspace/WorkspaceMain'
 import PatentCreation from './features/patent_creation/pages/PatentCreation'
 import PatentEdit from './features/patent_edit/pages/PatentEdit'
 
+import ProfileMain from './features/profile/pages/ProfileMain'
+import ProfileSettings from './features/profile/pages/ProfileSettings'
+
 import NotFound from './features/not_found/pages/NotFound'
 
 import './App.css'
@@ -47,8 +50,8 @@ export default function App() {
             <Route path='patents/:id' element={<PatentAnalogLayout />} />
           </Route>
           <Route path="/profile" element={<ProfileLayout />}>
-            <Route index element={<div>Главная</div>} />
-            <Route path="settings" element={<div>Настройки</div>} />
+            <Route index element={<ProfileMain />} />
+            <Route path="settings" element={<ProfileSettings />} />
             <Route path="feedback" element={<div>Обратная связь</div>} />
           </Route>
         </Route>
