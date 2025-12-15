@@ -5,7 +5,7 @@ import AuthorizedUserRoute from './routes/AuthorizedUserRoute'
 
 import WelcomeLayout from './layouts/welcome/WelcomeLayout'
 import WorkspaceLayout from './layouts/workspace/WorkspaceLayout'
-import PatentAnalogLayout from './layouts/get_analog/PatentAnalogLayout'
+import PatentAnalogLayout from './layouts/analog/PatentAnalogLayout'
 
 import Welcome from './features/welcome/pages/Welcome'
 import About from './features/welcome/pages/About'
