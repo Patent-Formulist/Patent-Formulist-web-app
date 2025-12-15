@@ -1,0 +1,117 @@
+.container {
+  padding: 5px 20px 20px 20px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 24px;
+}
+
+.buttonContainer::-webkit-scrollbar {
+  height: 6px;
+}
+
+.buttonContainer::-webkit-scrollbar-thumb {
+  background-color: rgba(49, 100, 146, 0.3);
+  border-radius: 3px;
+}
+
+.buttonContainer::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(49, 100, 146, 0.5);
+}
+
+.actionButton {
+  background-color: rgba(49, 100, 146, 1);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.actionButton:hover {
+  background-color: rgba(39, 80, 116, 1);
+}
+
+.actionButton:disabled {
+  background-color: rgba(150, 150, 150, 1);
+  color: rgba(220, 220, 220, 1);
+  cursor: not-allowed;
+}
+
+.actionButton.inactive {
+  background-color: rgba(150, 150, 150, 1);
+  color: rgba(220, 220, 220, 1);
+  cursor: not-allowed;
+}
+
+.actionButton.inactive:hover {
+  background-color: rgba(130, 130, 130, 1);
+}
+
+.error {
+  padding: 12px;
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  border-radius: 4px;
+  color: #c00;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  margin-top: 16px;
+  border: 1px solid rgba(49, 100, 146, 1);
+  border-radius: 4px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background-color: rgba(229, 237, 245, 1);
+}
+
+.table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: rgba(0, 51, 102, 1);
+  border: 1px solid rgba(49, 100, 146, 1);
+  font-size: 14px;
+}
+
+.table td {
+  padding: 12px;
+  border: 1px solid rgba(49, 100, 146, 1);
+  font-size: 13px;
+  color: rgba(0, 51, 102, 1);
+}
+
+.table tbody tr:hover {
+  background-color: rgba(229, 237, 245, 0.3);
+}
+
+.link {
+  color: rgba(49, 100, 146, 1);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

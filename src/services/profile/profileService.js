@@ -1,4 +1,4 @@
-import { API_PROFILE_ENDPOINTS } from '../../config/apiEndpoints'
+import { API_PROFILE_ENDPOINTS } from '../apiConfig'
 import authService from '../auth/authService'
 
 const USE_MOCK = true

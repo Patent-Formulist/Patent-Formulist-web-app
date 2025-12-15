@@ -1,5 +1,5 @@
 .container {
-  padding: 10px;
+  padding: 20px 0;
 }
 
 .title {
@@ -7,30 +7,51 @@
   font-size: 24px;
   font-weight: 700;
   color: rgba(0, 51, 102, 1);
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .buttonContainer {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  margin-top: 32px;
+  gap: 12px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid rgba(49, 100, 146, 0.2);
 }
 
 .actionButton {
-  background-color: rgba(49, 100, 146, 1);
-  color: white;
-  border: none;
+  background-color: white;
+  color: rgba(49, 100, 146, 1);
+  border: 2px solid rgba(49, 100, 146, 1);
   border-radius: 10px;
-  padding: 12px 24px;
-  font-size: 16px;
+  padding: 10px 20px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
 .actionButton:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.activeButton {
+  background-color: rgba(49, 100, 146, 1);
+  color: white;
+}
+
+.activeButton:hover {
   background-color: rgba(39, 80, 116, 1);
-  transform: translateY(-4px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.inactiveButton {
+  background-color: rgba(240, 240, 240, 1);
+  color: rgba(150, 150, 150, 1);
+  border-color: rgba(180, 180, 180, 1);
+  cursor: not-allowed;
+}
+
+.inactiveButton:hover {
+  box-shadow: none;
 }
