@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
-import analogService from '../services/analog/analogService'
+import analogService, { TASK_STATUS } from '../services/analog/analogService'
 
 const AnalogTaskContext = createContext()
 
@@ -11,6 +11,7 @@ export function AnalogTaskProvider({ children }) {
     return saved ? JSON.parse(saved) : {}
   })
   const intervalsRef = useRef({})
+  const removeToastRef = useRef()
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
@@ -18,7 +19,7 @@ export function AnalogTaskProvider({ children }) {
 
   useEffect(() => {
     Object.entries(tasks).forEach(([patentId, task]) => {
-      if (task.status === 'running' && !intervalsRef.current[patentId]) {
+      if (task.status === TASK_STATUS.RUNNING && !intervalsRef.current[patentId]) {
         restorePolling(patentId, task.taskId)
       }
     })
@@ -29,7 +30,7 @@ export function AnalogTaskProvider({ children }) {
       try {
         const result = await analogService.getTaskResult(taskId)
 
-        if (result.status === 'success') {
+        if (result.status === TASK_STATUS.SUCCESS) {
           clearInterval(intervalsRef.current[patentId])
           delete intervalsRef.current[patentId]
 
@@ -37,12 +38,12 @@ export function AnalogTaskProvider({ children }) {
             ...prev,
             [patentId]: {
               taskId,
-              status: 'success',
+              status: TASK_STATUS.SUCCESS,
               data: result.data,
               error: null
             }
           }))
-        } else if (result.status === 'failed' || result.status === 'cancelled') {
+        } else if (result.status === TASK_STATUS.FAILED || result.status === TASK_STATUS.CANCELLED) {
           clearInterval(intervalsRef.current[patentId])
           delete intervalsRef.current[patentId]
 
@@ -64,7 +65,7 @@ export function AnalogTaskProvider({ children }) {
           ...prev,
           [patentId]: {
             taskId,
-            status: 'failed',
+            status: TASK_STATUS.FAILED,
             data: null,
             error: error.message
           }
@@ -82,7 +83,7 @@ export function AnalogTaskProvider({ children }) {
         ...prev,
         [patentId]: {
           taskId,
-          status: 'running',
+          status: TASK_STATUS.RUNNING,
           data: null,
           error: null
         }
@@ -100,7 +101,7 @@ export function AnalogTaskProvider({ children }) {
         ...prev,
         [patentId]: {
           taskId: null,
-          status: 'failed',
+          status: TASK_STATUS.FAILED,
           data: null,
           error: error.message
         }
@@ -125,8 +126,21 @@ export function AnalogTaskProvider({ children }) {
     })
   }, [])
 
+  const clearTaskForPatent = useCallback((patentId) => {
+    if (intervalsRef.current[patentId]) {
+      clearInterval(intervalsRef.current[patentId])
+      delete intervalsRef.current[patentId]
+    }
+    
+    setTasks(prev => {
+      const newTasks = { ...prev }
+      delete newTasks[patentId]
+      return newTasks
+    })
+  }, [])
+
   return (
-    <AnalogTaskContext.Provider value={{ startTask, getTask, clearTask, tasks }}>
+    <AnalogTaskContext.Provider value={{ startTask, getTask, clearTask, clearTaskForPatent, tasks }}>
       {children}
     </AnalogTaskContext.Provider>
   )

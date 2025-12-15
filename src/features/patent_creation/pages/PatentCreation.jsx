@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { usePatents } from '../../../contexts/PatentsContext'
 import styles from '../styles/PatentCreation.module.css'
 
+
 const FORM_FIELDS = [
   {
     name: 'name',
@@ -64,13 +65,16 @@ const FORM_FIELDS = [
   }
 ]
 
+
 const FORM_STORAGE_KEY = 'patent_creation_form'
+
 
 const getStoredValues = () => {
   if (typeof window === 'undefined') return {}
   const saved = localStorage.getItem(FORM_STORAGE_KEY)
   return saved ? JSON.parse(saved) : {}
 }
+
 
 export default function PatentCreation() {
   const { 
@@ -155,10 +159,10 @@ export default function PatentCreation() {
       }, {})
 
       shouldSaveRef.current = false
-      await createPatent(patentData)
+      const createdPatent = await createPatent(patentData)
       localStorage.removeItem(FORM_STORAGE_KEY)
       reset()
-      navigate('/workspace')
+      navigate(`/workspace/patents/${createdPatent.patent_uuid}`)
     } catch (error) {
       shouldSaveRef.current = true
       alert(`Ошибка создания патента: ${error.message}`)
