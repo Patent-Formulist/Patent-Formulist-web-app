@@ -1,0 +1,148 @@
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 72px;
+  background-color: rgba(49, 100, 146, 0.1);
+  box-shadow: 2px 0 4px rgba(49, 100, 146, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  z-index: 1500;
+  transition: width 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header {
+  margin-bottom: 40px;
+}
+
+.backButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  background-color: rgba(49, 100, 146, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.backButton:hover {
+  background-color: rgba(49, 100, 146, 0.2);
+  transform: translateY(-1px);
+}
+
+.backIcon {
+  width: 20px;
+  height: 20px;
+  transform: rotate(-90deg);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.navItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.navButton:hover {
+  background-color: rgba(49, 100, 146, 0.15);
+  transform: translateY(-1px);
+}
+
+.navButtonActive {
+  background-color: rgba(49, 100, 146, 0.25);
+  transform: translateY(-1px);
+}
+
+.navIcon {
+  width: 22px;
+  height: 22px;
+}
+
+.navLabel {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #234b7a;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.mobileMenuButton {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  z-index: 1500;
+  cursor: pointer;
+}
+
+.mobileMenuButton img {
+  width: 24px;
+  height: 24px;
+}
+
+@media (max-width: 600px) {
+  .mobileMenuButton {
+    display: block;
+  }
+
+  .sidebar {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 2px 0 12px rgba(49, 100, 146, 0.85);
+    transition: width 0.3s ease, background-color 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1400;
+  }
+
+  .sidebarOpen {
+    width: 220px;
+    padding: 16px 8px;
+  }
+
+  .navButton {
+    width: 48px;
+    height: 48px;
+  }
+
+  .navButton:hover {
+    background-color: rgba(49, 100, 146, 0.25);
+    transform: translateY(0);
+  }
+
+  .backButton {
+    width: 48px;
+    height: 48px;
+  }
+}

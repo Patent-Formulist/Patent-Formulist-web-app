@@ -6,6 +6,7 @@ import AuthorizedUserRoute from './routes/AuthorizedUserRoute'
 import WelcomeLayout from './layouts/welcome/WelcomeLayout'
 import WorkspaceLayout from './layouts/workspace/WorkspaceLayout'
 import PatentAnalogLayout from './layouts/analog/PatentAnalogLayout'
+import ProfileLayout from './layouts/profile/ProfileLayout'
 
 import Welcome from './features/welcome/pages/Welcome'
 import About from './features/welcome/pages/About'
@@ -19,6 +20,9 @@ import WorkspaceMain from './layouts/workspace/WorkspaceMain'
 
 import PatentCreation from './features/patent_creation/pages/PatentCreation'
 import PatentEdit from './features/patent_edit/pages/PatentEdit'
+
+import ProfileMain from './features/profile/pages/ProfileMain'
+import ProfileSettings from './features/profile/pages/ProfileSettings'
 
 import NotFound from './features/not_found/pages/NotFound'
 
@@ -45,7 +49,11 @@ export default function App() {
             <Route path='patents/:id/edit' element={<PatentEdit />}/>
             <Route path='patents/:id' element={<PatentAnalogLayout />} />
           </Route>
-          <Route path='profile' element={<div>Профиль</div>} />
+          <Route path="/profile" element={<ProfileLayout />}>
+            <Route index element={<ProfileMain />} />
+            <Route path="settings" element={<ProfileSettings />} />
+            <Route path="feedback" element={<div>Обратная связь</div>} />
+          </Route>
         </Route>
         <Route path='*' element={<NotFound />} />
       </Routes>
