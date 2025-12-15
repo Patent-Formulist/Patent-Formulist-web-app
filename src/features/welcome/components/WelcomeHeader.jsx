@@ -1,13 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import authService from '../../../services/auth/authService';
 
 import logo from '../../../resources/logo.svg';
 import funcsIcon from '../../../resources/funcs.svg';
 
 import styles from '../styles/WelcomeHeader.module.css';
 
+
 function WelcomeHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const isValid = await authService.validate();
+        setIsAuthenticated(isValid);
+      } catch {
+        setIsAuthenticated(false);
+      }
+    };
+    checkAuth();
+  }, []);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
@@ -25,22 +40,38 @@ function WelcomeHeader() {
           <Link to="/contacts" onClick={closeMenu}>Контакты</Link>
           
           <div className={styles.mobileAuthButtons}>
-            <Link to="/register" className={styles.mobileRegisterBtn} onClick={closeMenu}>
-              Регистрация
-            </Link>
-            <Link to="/login" className={styles.mobileLoginBtn} onClick={closeMenu}>
-              Войти
-            </Link>
+            {isAuthenticated ? (
+              <Link to="/workspace" className={styles.mobileRegisterBtn} onClick={closeMenu}>
+                К работе
+              </Link>
+            ) : (
+              <>
+                <Link to="/signin" className={styles.mobileRegisterBtn} onClick={closeMenu}>
+                  Регистрация
+                </Link>
+                <Link to="/login" className={styles.mobileLoginBtn} onClick={closeMenu}>
+                  Войти
+                </Link>
+              </>
+            )}
           </div>
         </nav>
 
         <div className={styles.authButtons}>
-          <Link to="/signin" className={styles.registerBtn} onClick={closeMenu}>
-            Регистрация
-          </Link>
-          <Link to="/login" className={styles.loginBtn} onClick={closeMenu}>
-            Войти
-          </Link>
+          {isAuthenticated ? (
+            <Link to="/workspace" className={styles.registerBtn} onClick={closeMenu}>
+              К работе
+            </Link>
+          ) : (
+            <>
+              <Link to="/signin" className={styles.registerBtn} onClick={closeMenu}>
+                Регистрация
+              </Link>
+              <Link to="/login" className={styles.loginBtn} onClick={closeMenu}>
+                Войти
+              </Link>
+            </>
+          )}
         </div>
 
         <button 
@@ -54,5 +85,6 @@ function WelcomeHeader() {
     </header>
   );
 }
+
 
 export default WelcomeHeader;
