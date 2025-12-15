@@ -1,0 +1,15 @@
+.main {
+  margin-left: 72px;
+  margin-right: 72px; 
+  min-height: 100vh; 
+  box-sizing: border-box;
+  padding: 40px 20px;
+}
+
+@media (max-width: 600px) {
+  .main {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 60px 20px 40px 20px;
+  }
+}
