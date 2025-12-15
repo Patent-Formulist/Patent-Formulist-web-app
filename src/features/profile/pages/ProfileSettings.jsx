@@ -1,42 +1,41 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import profileService from '../../../services/profile/profileService'
 import styles from '../styles/ProfileSettings.module.css'
-
-const AI_MODELS = [
-  'GPT-4',
-  'GPT-3.5 Turbo',
-  'Claude 3 Opus',
-  'Claude 3 Sonnet',
-  'Gemini Pro',
-  'LLaMA 3'
-]
-
-const FORM_STORAGE_KEY = 'profile_settings_form'
-
-const getStoredValues = () => {
-  if (typeof window === 'undefined') return { isExpert: false, aiModel: AI_MODELS[0] }
-  const saved = localStorage.getItem(FORM_STORAGE_KEY)
-  return saved ? JSON.parse(saved) : { isExpert: false, aiModel: AI_MODELS[0] }
-}
 
 export default function ProfileSettings() {
   const [isExpert, setIsExpert] = useState(false)
-  const [aiModel, setAiModel] = useState(AI_MODELS[0])
+  const [aiModel, setAiModel] = useState('')
+  const [availableModels, setAvailableModels] = useState([])
+  const [subscription, setSubscription] = useState('...')
   const [loading, setLoading] = useState(false)
+  const [initialLoading, setInitialLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
-  
-  const shouldSaveRef = useRef(true)
+
 
   useEffect(() => {
-    const stored = getStoredValues()
-    setIsExpert(stored.isExpert)
-    setAiModel(stored.aiModel)
+    const loadSettings = async () => {
+      try {
+        setInitialLoading(true)
+        
+        const [settingsData, models] = await Promise.all([
+          profileService.getSettings(),
+          profileService.getAvailableModels()
+        ])
+
+        setAvailableModels(models)
+        setIsExpert(settingsData.isExpert)
+        setAiModel(settingsData.aiModel)
+        setSubscription(settingsData.subscription || '...')
+      } catch (error) {
+        setErrorMessage(error.message || 'Ошибка загрузки настроек')
+      } finally {
+        setInitialLoading(false)
+      }
+    }
+
+    loadSettings()
   }, [])
 
-  useEffect(() => {
-    if (shouldSaveRef.current) {
-      localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify({ isExpert, aiModel }))
-    }
-  }, [isExpert, aiModel])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -44,37 +43,49 @@ export default function ProfileSettings() {
     setErrorMessage('')
 
     try {
-      // TODO: Реализовать отправку на сервер
+      const settingsData = { isExpert, aiModel }
       
-      console.log('Сохранение настроек:', { isExpert, aiModel })
-      
-      shouldSaveRef.current = false
-      localStorage.removeItem(FORM_STORAGE_KEY)
-      
-      // Имитация успешного сохранения
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const result = await profileService.updateSettings(settingsData)
       
       alert('Настройки успешно обновлены')
+      console.log('Результат:', result)
     } catch (error) {
       setErrorMessage(error.message || 'Ошибка сохранения')
-      shouldSaveRef.current = true
     } finally {
       setLoading(false)
     }
   }
 
+
   const handleCancel = () => {
-    shouldSaveRef.current = false
-    localStorage.removeItem(FORM_STORAGE_KEY)
-    setIsExpert(false)
-    setAiModel(AI_MODELS[0])
-    setErrorMessage('')
-    shouldSaveRef.current = true
+    setInitialLoading(true)
+    profileService.getSettings()
+      .then(settingsData => {
+        setIsExpert(settingsData.isExpert)
+        setAiModel(settingsData.aiModel)
+        setErrorMessage('')
+      })
+      .catch(error => setErrorMessage(error.message || 'Ошибка загрузки'))
+      .finally(() => {
+        setInitialLoading(false)
+      })
   }
+
 
   const toggleExpert = () => {
     setIsExpert(prev => !prev)
   }
+
+
+  if (initialLoading) {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Настройки</h2>
+        <p className={styles.loadingText}>Загрузка...</p>
+      </div>
+    )
+  }
+
 
   return (
     <div className={styles.container}>
@@ -109,9 +120,9 @@ export default function ProfileSettings() {
               className={styles.select}
               value={aiModel}
               onChange={(e) => setAiModel(e.target.value)}
-              disabled={loading}
+              disabled={loading || availableModels.length === 0}
             >
-              {AI_MODELS.map(model => (
+              {availableModels.map(model => (
                 <option key={model} value={model}>
                   {model}
                 </option>
@@ -124,7 +135,7 @@ export default function ProfileSettings() {
           <label className={styles.label}>Подписка</label>
           <div className={styles.controlArea}>
             <div className={styles.subscriptionInfo}>
-              <span className={styles.subscriptionText}>...</span>
+              <span className={styles.subscriptionText}>{subscription}</span>
             </div>
           </div>
         </div>

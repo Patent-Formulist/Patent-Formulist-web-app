@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import profileService from '../../../services/profile/profileService'
 import styles from '../styles/ProfileMain.module.css'
 
 import plus from '../../../resources/plus.svg'
@@ -12,29 +13,42 @@ const getStoredValues = () => {
 }
 
 export default function ProfileMain() {
-  // TODO: Получать email из authService или контекста пользователя
-  const [currentEmail] = useState('user@example.com')
-  
   const [name, setName] = useState('')
   const [about, setAbout] = useState('')
-  const [email, setEmail] = useState(currentEmail)
+  const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
+  const [initialLoading, setInitialLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   
   const shouldSaveRef = useRef(true)
 
   useEffect(() => {
-    const stored = getStoredValues()
-    if (stored.name) setName(stored.name)
-    if (stored.about) setAbout(stored.about)
-    if (stored.email) setEmail(stored.email)
+    const loadProfile = async () => {
+      try {
+        setInitialLoading(true)
+        
+        const profileData = await profileService.getProfile()
+
+        const stored = getStoredValues()
+        
+        setName(stored.name !== undefined ? stored.name : profileData.name || '')
+        setAbout(stored.about !== undefined ? stored.about : profileData.about || '')
+        setEmail(stored.email !== undefined ? stored.email : profileData.email || '')
+      } catch (error) {
+        setErrorMessage(error.message || 'Ошибка загрузки профиля')
+      } finally {
+        setInitialLoading(false)
+      }
+    }
+
+    loadProfile()
   }, [])
 
   useEffect(() => {
-    if (shouldSaveRef.current) {
+    if (shouldSaveRef.current && !initialLoading) {
       localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify({ name, about, email }))
     }
-  }, [name, about, email])
+  }, [name, about, email, initialLoading])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -42,17 +56,15 @@ export default function ProfileMain() {
     setErrorMessage('')
 
     try {
-      // TODO: Реализовать отправку на сервер
+      const profileData = { name, about, email }
       
-      console.log('Сохранение данных профиля:', { name, about, email })
+      const result = await profileService.updateProfile(profileData)
       
       shouldSaveRef.current = false
       localStorage.removeItem(FORM_STORAGE_KEY)
       
-      // Имитация успешного сохранения
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
       alert('Профиль успешно обновлен')
+      console.log('Результат:', result)
     } catch (error) {
       setErrorMessage(error.message || 'Ошибка сохранения')
       shouldSaveRef.current = true
@@ -64,16 +76,51 @@ export default function ProfileMain() {
   const handleCancel = () => {
     shouldSaveRef.current = false
     localStorage.removeItem(FORM_STORAGE_KEY)
-    setName('')
-    setAbout('')
-    setEmail(currentEmail)
-    setErrorMessage('')
-    shouldSaveRef.current = true
+    
+    setInitialLoading(true)
+    profileService.getProfile()
+      .then(profileData => {
+        setName(profileData.name || '')
+        setAbout(profileData.about || '')
+        setEmail(profileData.email || '')
+        setErrorMessage('')
+      })
+      .catch(error => setErrorMessage(error.message || 'Ошибка загрузки'))
+      .finally(() => {
+        setInitialLoading(false)
+        shouldSaveRef.current = true
+      })
   }
 
   const handleAvatarClick = () => {
-    console.log('Выбор аватара')
-    // TODO: Реализовать загрузку аватара
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'image/*'
+    input.onchange = async (e) => {
+      const file = e.target.files[0]
+      if (!file) return
+
+      try {
+        setLoading(true)
+        const result = await profileService.uploadAvatar(file)
+        console.log('Загрузка аватара:', result)
+        alert('Аватар успешно загружен')
+      } catch (error) {
+        setErrorMessage(error.message || 'Ошибка загрузки аватара')
+      } finally {
+        setLoading(false)
+      }
+    }
+    input.click()
+  }
+
+  if (initialLoading) {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Личный кабинет</h2>
+        <p className={styles.loadingText}>Загрузка...</p>
+      </div>
+    )
   }
 
   return (
@@ -87,6 +134,7 @@ export default function ProfileMain() {
             className={styles.avatarButton}
             onClick={handleAvatarClick}
             aria-label="Загрузить фото профиля"
+            disabled={loading}
           >
             <img src={plus} alt="Добавить фото" className={styles.avatarIcon} />
           </button>
