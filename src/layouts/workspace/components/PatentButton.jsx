@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { usePatents } from '../../../contexts/PatentsContext'
+import { useAnalogTask } from '../../../contexts/AnalogTaskContext'
 import { createPortal } from 'react-dom'
 
 import styles from '../styles/PatentButton.module.css'
@@ -8,6 +9,7 @@ import styles from '../styles/PatentButton.module.css'
 import dots from '../../../resources/dots.svg'
 import bin from '../../../resources/bin.svg'
 import pen from '../../../resources/pen.svg'
+
 
 export default function PatentButton({ patent, isActive, isPanelVisible }) {
     const [menuVisible, setMenuVisible] = useState(false)
@@ -19,6 +21,7 @@ export default function PatentButton({ patent, isActive, isPanelVisible }) {
     const navigate = useNavigate()
     const location = useLocation()
     const { deletePatent } = usePatents()
+    const { clearTaskForPatent } = useAnalogTask()
 
     useEffect(() => {
         if (!isPanelVisible) {
@@ -89,7 +92,11 @@ export default function PatentButton({ patent, isActive, isPanelVisible }) {
         try {
             setDeleteModalVisible(false)
             const isOnPatentPage = location.pathname.includes(`/patents/${patent.id}`)
+            
+            clearTaskForPatent(patent.id)
+            
             await deletePatent(patent.id)
+            
             if (isOnPatentPage) {
                 navigate('/workspace')
             }

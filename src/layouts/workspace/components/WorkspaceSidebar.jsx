@@ -58,7 +58,7 @@ export default function WorkspaceSidebar() {
       >
         <header className={styles.header}>
           <Link
-            to="/workspace"
+            to="/"
             className={styles.logoLink}
             onClick={() => setIsSidebarOpen(false)}
           >

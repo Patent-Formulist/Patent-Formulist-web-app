@@ -1,36 +1,129 @@
 .container {
-  padding: 10px;
+  padding: 20px 0;
 }
+
 
 .title {
   text-align: center;
   font-size: 24px;
   font-weight: 700;
   color: rgba(0, 51, 102, 1);
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
+
 
 .buttonContainer {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  margin-top: 32px;
+  gap: 12px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid rgba(49, 100, 146, 0.2);
 }
+
 
 .actionButton {
-  background-color: rgba(49, 100, 146, 1);
-  color: white;
-  border: none;
+  background-color: white;
+  color: rgba(49, 100, 146, 1);
+  border: 2px solid rgba(49, 100, 146, 1);
   border-radius: 10px;
-  padding: 12px 24px;
-  font-size: 16px;
+  padding: 10px 20px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
+
+.actionButton::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: conic-gradient(from 180deg at 50% 50%, #FF9900 0deg, rgba(230, 155, 13, 0.701923) 207.69deg, rgba(172, 159, 42, 0) 360deg);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), white 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), white 0);
+  animation: spin 1s linear infinite;
+  opacity: 0;
+  visibility: hidden;
+}
+
+
+.actionButton.loading::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+.actionButton.loading {
+  padding-right: 36px;
+}
+
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+
 .actionButton:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.activeButton {
+  background-color: rgba(49, 100, 146, 1);
+  color: white;
+}
+
+
+.activeButton:hover {
   background-color: rgba(39, 80, 116, 1);
-  transform: translateY(-4px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.actionButton::before {
+  content: '';
+  position: absolute;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  background-image: url('../../../resources/done.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.actionButton.completed::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.actionButton.completed {
+  padding-right: 42px;
+}
+
+.inactiveButton {
+  background-color: rgba(240, 240, 240, 1);
+  color: rgba(150, 150, 150, 1);
+  border-color: rgba(180, 180, 180, 1);
+  cursor: not-allowed;
+}
+
+
+.inactiveButton:hover {
+  box-shadow: none;
 }
