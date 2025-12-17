@@ -11,7 +11,7 @@ const mockData = {
     avatar: null
   },
   settings: {
-    isExpert: false,
+    isExpert: true,
     aiModel: 'GPT-4',
     subscription: 'Базовая подписка'
   },

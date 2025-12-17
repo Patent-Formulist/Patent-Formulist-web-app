@@ -26,7 +26,9 @@ export const API_PROFILE_ENDPOINTS = {
   SUBSCRIPTION_GET: `${URL}/settings/subscription`,
 }
 
-export const API_ANALOG_ENDPOINTS = {
+export const API_REFERENCE_ENDPOINTS = {
   ANALOG_CREATE_LINK: `${URL}/v1/analog/link`,
   ANALOG_GET_RESULT:  (taskId) => `${URL}/v1/analog/result/${taskId}`,
+  ANALOG_COMPARE: `${URL}/v1/analog/compare`,
+  ANALOG_COMPARE_RESULT: (taskId) => `${URL}/v1/analog/compare/result/${taskId}`,
 }

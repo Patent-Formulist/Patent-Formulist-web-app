@@ -1,13 +1,11 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { createPortal } from 'react-dom'
-import { useAnalogTask } from '../../../contexts/AnalogTaskContext'
+import { useReference } from '../../../contexts/ReferenceContext'
 import { useToast } from '../../../contexts/ToastContext'
-import { TASK_STATUS } from '../../../services/analog/analogService'
+import { TASK_STATUS } from '../../../services/reference/referenceService'
 import * as XLSX from 'xlsx'
-import styles from '../styles/Analogs.module.css'
-
-
+import styles from '../styles/Analogues.module.css'
 
 const downloadExcel = (analogs, patentId, type = 'full') => {
   let headers, rows
@@ -61,9 +59,9 @@ const downloadExcel = (analogs, patentId, type = 'full') => {
 
 
 
-export default function Analogs() {
+export default function Analogues() {
   const { id } = useParams()
-  const { startTask, getTask } = useAnalogTask()
+  const { startTask, getTask } = useReference()
   const { showWarning, showSuccess } = useToast()
   
   const [viewMode, setViewMode] = useState('main')
@@ -256,7 +254,7 @@ export default function Analogs() {
               onClick={handleGetLinksAndClaims}
               disabled={loading}
             >
-              Получить ссылки и формулы
+              Найти аналоги
             </button>
             <button 
               className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
