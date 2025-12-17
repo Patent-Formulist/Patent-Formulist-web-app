@@ -126,12 +126,21 @@ class AuthService {
     let token = this.getAccessToken();
     const refreshToken = this.getRefreshToken();
 
+    if (!token && !refreshToken) {
+      this.clearTokens();
+      window.__REDIRECTING__ = true;
+      window.location.href = '/login';
+      return new Promise(() => {}); 
+    }
+
     if (!token && refreshToken) {
       try {
         token = await this.refreshAccessToken();
       } catch (e) {
+        this.clearTokens();
+        window.__REDIRECTING__ = true;
         window.location.href = '/login';
-        throw e;
+        return new Promise(() => {});
       }
     }
 
@@ -167,8 +176,10 @@ class AuthService {
         };
         response = await fetch(url, retryConfig);
       } catch (error) {
+        this.clearTokens();
+        window.__REDIRECTING__ = true;
         window.location.href = '/login';
-        throw error;
+        return new Promise(() => {});
       }
     }
 

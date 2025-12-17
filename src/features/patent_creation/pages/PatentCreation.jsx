@@ -111,6 +111,7 @@ export default function PatentCreation() {
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
+      if (window.__REDIRECTING__) return;
       if (!hasFormData) return
       e.preventDefault()
       e.returnValue = ''
@@ -165,7 +166,6 @@ export default function PatentCreation() {
       navigate(`/workspace/patents/${createdPatent.patent_uuid}`)
     } catch (error) {
       shouldSaveRef.current = true
-      alert(`Ошибка создания патента: ${error.message}`)
     }
   }
 
