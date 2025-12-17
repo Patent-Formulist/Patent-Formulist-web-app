@@ -1,14 +1,14 @@
 import { Routes, Route } from 'react-router-dom'
 
 import { PatentsProvider } from './contexts/PatentsContext'
-import { AnalogTaskProvider } from './contexts/AnalogTaskContext'
+import { ReferenceProvider } from './contexts/ReferenceContext'
 import { ToastProvider } from './contexts/ToastContext'
 
 import AuthorizedUserRoute from './routes/AuthorizedUserRoute'
 
 import WelcomeLayout from './layouts/welcome/WelcomeLayout'
 import WorkspaceLayout from './layouts/workspace/WorkspaceLayout'
-import PatentAnalogLayout from './layouts/analog/PatentAnalogLayout'
+import ReferenceLayout from './layouts/reference/ReferenceLayout'
 import ProfileLayout from './layouts/profile/ProfileLayout'
 
 import Welcome from './features/welcome/pages/Welcome'
@@ -24,7 +24,7 @@ import WorkspaceMain from './layouts/workspace/WorkspaceMain'
 import PatentCreation from './features/patent_creation/pages/PatentCreation'
 import PatentEdit from './features/patent_edit/pages/PatentEdit'
 
-import Analogs from './features/get_analogs/pages/Analogs'
+import Analogues from './features/get_analogues/pages/Analogues'
 import AnaloguesPatentComparison from './features/comparison_with_analogues/pages/AnaloguesPatentComparison'
 
 import ProfileMain from './features/profile/pages/ProfileMain'
@@ -37,7 +37,7 @@ import './App.css'
 export default function App() {
   return (
     <PatentsProvider>
-      <AnalogTaskProvider>
+      <ReferenceProvider>
         <ToastProvider>
           <Routes>
             <Route path='/' element={<WelcomeLayout />}>
@@ -55,8 +55,8 @@ export default function App() {
                 <Route path='questions' element={<FAQ />}/>
                 <Route path='patent-creation' element={<PatentCreation />} />
                 <Route path='patents/:id/edit' element={<PatentEdit />}/>
-                <Route path='patents/:id' element={<PatentAnalogLayout />}>
-                  <Route path='analogs' element={<Analogs />} />
+                <Route path='patents/:id' element={<ReferenceLayout />}>
+                  <Route path='analogs' element={<Analogues />} />
                   <Route path='attributes' element={<AnaloguesPatentComparison />} />
                   <Route path='prototype' element={<div>Прототип</div>} />
                 </Route>
@@ -70,7 +70,7 @@ export default function App() {
             <Route path='*' element={<NotFound />} />
           </Routes>
         </ToastProvider>
-      </AnalogTaskProvider>
+      </ReferenceProvider>
     </PatentsProvider>
   )
 }

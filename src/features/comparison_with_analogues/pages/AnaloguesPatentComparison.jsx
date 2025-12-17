@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { createPortal } from 'react-dom'
-import { useAnalogTask } from '../../../contexts/AnalogTaskContext'
+import { useReference } from '../../../contexts/ReferenceContext'
 import { useToast } from '../../../contexts/ToastContext'
-import { TASK_STATUS } from '../../../services/analog/analogService'
+import { TASK_STATUS } from '../../../services/reference/referenceService'
 import * as XLSX from 'xlsx'
 import styles from '../styles/AnaloguesPatentComparison.module.css'
 
@@ -124,7 +124,7 @@ const downloadPatentOnlyExcel = (patentFeatures, fileName) => {
 
 export default function AnaloguesPatentComparison() {
   const { id } = useParams()
-  const { startCompareTask, getCompareTask } = useAnalogTask()
+  const { startCompareTask, getCompareTask } = useReference()
   const { showWarning, showSuccess } = useToast()
   
   const [confirmModalVisible, setConfirmModalVisible] = useState(false)

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { usePatents } from '../../../contexts/PatentsContext'
-import { useAnalogTask } from '../../../contexts/AnalogTaskContext'
+import { useReference } from '../../../contexts/ReferenceContext'
 import { createPortal } from 'react-dom'
 
 import styles from '../styles/PatentButton.module.css'
@@ -21,7 +21,7 @@ export default function PatentButton({ patent, isActive, isPanelVisible }) {
     const navigate = useNavigate()
     const location = useLocation()
     const { deletePatent } = usePatents()
-    const { clearTaskForPatent } = useAnalogTask()
+    const { clearTaskForPatent } = useReference()
 
     useEffect(() => {
         if (!isPanelVisible) {

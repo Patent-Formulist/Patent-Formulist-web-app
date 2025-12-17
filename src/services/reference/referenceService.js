@@ -1,4 +1,4 @@
-import { API_ANALOG_ENDPOINTS } from '../apiConfig'
+import { API_REFERENCE_ENDPOINTS } from '../apiConfig'
 import authService from '../auth/authService'
 
 const USE_MOCK = true
@@ -134,14 +134,14 @@ const MOCK_DATA = {
   }
 }
 
-class AnalogService {
+class ReferenceService {
   async createAnalogLink(patentId) {
     if (USE_MOCK) {
       return MOCK_DATA.analogsSearch.createTask(patentId)
     }
 
     const response = await authService.authenticatedFetch(
-      API_ANALOG_ENDPOINTS.ANALOG_CREATE_LINK,
+      API_REFERENCE_ENDPOINTS.ANALOG_CREATE_LINK,
       {
         method: 'POST',
         headers: { Accept: 'application/json' },
@@ -189,7 +189,7 @@ class AnalogService {
     }
 
     const response = await authService.authenticatedFetch(
-      API_ANALOG_ENDPOINTS.ANALOG_GET_RESULT(taskId),
+      API_REFERENCE_ENDPOINTS.ANALOG_GET_RESULT(taskId),
       {
         method: 'GET',
         headers: { Accept: 'application/json' }
@@ -236,7 +236,7 @@ class AnalogService {
     }
 
     const response = await authService.authenticatedFetch(
-      API_ANALOG_ENDPOINTS.ANALOG_COMPARE,
+      API_REFERENCE_ENDPOINTS.ANALOG_COMPARE,
       {
         method: 'POST',
         headers: { Accept: 'application/json' },
@@ -284,7 +284,7 @@ class AnalogService {
     }
 
     const response = await authService.authenticatedFetch(
-      API_ANALOG_ENDPOINTS.ANALOG_COMPARE_RESULT(taskId),
+      API_REFERENCE_ENDPOINTS.ANALOG_COMPARE_RESULT(taskId),
       {
         method: 'GET',
         headers: { Accept: 'application/json' }
@@ -361,4 +361,4 @@ class AnalogService {
   }
 }
 
-export default new AnalogService()
+export default new ReferenceService()

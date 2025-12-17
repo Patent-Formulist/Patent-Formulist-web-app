@@ -1,17 +1,17 @@
 import { useParams, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import patentService from '../../services/patent/patentService'
-import { useAnalogTask } from '../../contexts/AnalogTaskContext'
+import { useReference } from '../../contexts/ReferenceContext'
 import { useToast } from '../../contexts/ToastContext'
-import { TASK_STATUS } from '../../services/analog/analogService'
-import styles from './styles/PatentAnalogLayout.module.css'
+import { TASK_STATUS } from '../../services/reference/referenceService'
+import styles from './styles/ReferenceLayout.module.css'
 
 export default function PatentAnalogLayout() {
   const { id } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
   const { showWarning } = useToast()
-  const { getTask, getCompareTask } = useAnalogTask()
+  const { getTask, getCompareTask } = useReference()
   
   const [patent, setPatent] = useState(null)
   const [loading, setLoading] = useState(true)

@@ -1,12 +1,12 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
-import analogService, { TASK_STATUS } from '../services/analog/analogService'
+import referenceService, { TASK_STATUS } from '../services/reference/referenceService'
 
-const AnalogTaskContext = createContext()
+const ReferenceContext = createContext()
 
 const STORAGE_KEY_ANALOGS = 'analog_tasks'
 const STORAGE_KEY_COMPARE = 'compare_tasks'
 
-export function AnalogTaskProvider({ children }) {
+export function ReferenceProvider({ children }) {
   const [analogTasks, setAnalogTasks] = useState(() => {
     const saved = localStorage.getItem(STORAGE_KEY_ANALOGS)
     return saved ? JSON.parse(saved) : {}
@@ -45,7 +45,7 @@ export function AnalogTaskProvider({ children }) {
   const restoreAnalogPolling = useCallback((patentId, taskId) => {
     analogIntervalsRef.current[patentId] = setInterval(async () => {
       try {
-        const result = await analogService.getTaskResult(taskId)
+        const result = await referenceService.getTaskResult(taskId)
 
         if (result.status === TASK_STATUS.SUCCESS) {
           clearInterval(analogIntervalsRef.current[patentId])
@@ -94,7 +94,7 @@ export function AnalogTaskProvider({ children }) {
   const restoreComparePolling = useCallback((patentId, taskId) => {
     compareIntervalsRef.current[patentId] = setInterval(async () => {
       try {
-        const result = await analogService.getCompareResult(taskId)
+        const result = await referenceService.getCompareResult(taskId)
 
         if (result.status === TASK_STATUS.SUCCESS) {
           clearInterval(compareIntervalsRef.current[patentId])
@@ -142,7 +142,7 @@ export function AnalogTaskProvider({ children }) {
 
   const startAnalogTask = useCallback(async (patentId) => {
     try {
-      const createResponse = await analogService.createAnalogLink(patentId)
+      const createResponse = await referenceService.createAnalogLink(patentId)
       const taskId = createResponse.task_id
 
       setAnalogTasks(prev => ({
@@ -178,7 +178,7 @@ export function AnalogTaskProvider({ children }) {
 
   const startCompareTask = useCallback(async (patentId) => {
     try {
-      const createResponse = await analogService.createAnalogCompare(patentId)
+      const createResponse = await referenceService.createAnalogCompare(patentId)
       const taskId = createResponse.task_id
 
       setCompareTasks(prev => ({
@@ -250,7 +250,7 @@ export function AnalogTaskProvider({ children }) {
   }, [clearAnalogTask, clearCompareTask])
 
   return (
-    <AnalogTaskContext.Provider value={{ 
+    <ReferenceContext.Provider value={{ 
       startTask: startAnalogTask,
       getTask: getAnalogTask, 
       clearTask: clearAnalogTask,
@@ -262,12 +262,12 @@ export function AnalogTaskProvider({ children }) {
       compareTasks
     }}>
       {children}
-    </AnalogTaskContext.Provider>
+    </ReferenceContext.Provider>
   )
 }
 
-export function useAnalogTask() {
-  const context = useContext(AnalogTaskContext)
+export function useReference() {
+  const context = useContext(ReferenceContext)
   if (!context) {
     throw new Error('useAnalogTask must be used within AnalogTaskProvider')
   }
