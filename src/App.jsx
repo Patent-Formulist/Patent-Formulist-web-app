@@ -25,6 +25,7 @@ import PatentCreation from './features/patent_creation/pages/PatentCreation'
 import PatentEdit from './features/patent_edit/pages/PatentEdit'
 
 import Analogs from './features/get_analogs/pages/Analogs'
+import AnaloguesPatentComparison from './features/comparison_with_analogues/pages/AnaloguesPatentComparison'
 
 import ProfileMain from './features/profile/pages/ProfileMain'
 import ProfileSettings from './features/profile/pages/ProfileSettings'
@@ -32,7 +33,6 @@ import ProfileSettings from './features/profile/pages/ProfileSettings'
 import NotFound from './features/not_found/pages/NotFound'
 
 import './App.css'
-
 
 export default function App() {
   return (
@@ -57,7 +57,7 @@ export default function App() {
                 <Route path='patents/:id/edit' element={<PatentEdit />}/>
                 <Route path='patents/:id' element={<PatentAnalogLayout />}>
                   <Route path='analogs' element={<Analogs />} />
-                  <Route path='attributes' element={<div>Атрибуты аналогов</div>} />
+                  <Route path='attributes' element={<AnaloguesPatentComparison />} />
                   <Route path='prototype' element={<div>Прототип</div>} />
                 </Route>
               </Route>

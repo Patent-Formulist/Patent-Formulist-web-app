@@ -3,38 +3,55 @@ import analogService, { TASK_STATUS } from '../services/analog/analogService'
 
 const AnalogTaskContext = createContext()
 
-const STORAGE_KEY = 'analog_tasks'
+const STORAGE_KEY_ANALOGS = 'analog_tasks'
+const STORAGE_KEY_COMPARE = 'compare_tasks'
 
 export function AnalogTaskProvider({ children }) {
-  const [tasks, setTasks] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEY)
+  const [analogTasks, setAnalogTasks] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_KEY_ANALOGS)
     return saved ? JSON.parse(saved) : {}
   })
-  const intervalsRef = useRef({})
-  const removeToastRef = useRef()
+
+  const [compareTasks, setCompareTasks] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_KEY_COMPARE)
+    return saved ? JSON.parse(saved) : {}
+  })
+
+  const analogIntervalsRef = useRef({})
+  const compareIntervalsRef = useRef({})
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
-  }, [tasks])
+    localStorage.setItem(STORAGE_KEY_ANALOGS, JSON.stringify(analogTasks))
+  }, [analogTasks])
 
   useEffect(() => {
-    Object.entries(tasks).forEach(([patentId, task]) => {
-      if (task.status === TASK_STATUS.RUNNING && !intervalsRef.current[patentId]) {
-        restorePolling(patentId, task.taskId)
+    localStorage.setItem(STORAGE_KEY_COMPARE, JSON.stringify(compareTasks))
+  }, [compareTasks])
+
+  useEffect(() => {
+    Object.entries(analogTasks).forEach(([patentId, task]) => {
+      if (task.status === TASK_STATUS.RUNNING && !analogIntervalsRef.current[patentId]) {
+        restoreAnalogPolling(patentId, task.taskId)
+      }
+    })
+
+    Object.entries(compareTasks).forEach(([patentId, task]) => {
+      if (task.status === TASK_STATUS.RUNNING && !compareIntervalsRef.current[patentId]) {
+        restoreComparePolling(patentId, task.taskId)
       }
     })
   }, [])
 
-  const restorePolling = useCallback((patentId, taskId) => {
-    intervalsRef.current[patentId] = setInterval(async () => {
+  const restoreAnalogPolling = useCallback((patentId, taskId) => {
+    analogIntervalsRef.current[patentId] = setInterval(async () => {
       try {
         const result = await analogService.getTaskResult(taskId)
 
         if (result.status === TASK_STATUS.SUCCESS) {
-          clearInterval(intervalsRef.current[patentId])
-          delete intervalsRef.current[patentId]
+          clearInterval(analogIntervalsRef.current[patentId])
+          delete analogIntervalsRef.current[patentId]
 
-          setTasks(prev => ({
+          setAnalogTasks(prev => ({
             ...prev,
             [patentId]: {
               taskId,
@@ -44,10 +61,10 @@ export function AnalogTaskProvider({ children }) {
             }
           }))
         } else if (result.status === TASK_STATUS.FAILED || result.status === TASK_STATUS.CANCELLED) {
-          clearInterval(intervalsRef.current[patentId])
-          delete intervalsRef.current[patentId]
+          clearInterval(analogIntervalsRef.current[patentId])
+          delete analogIntervalsRef.current[patentId]
 
-          setTasks(prev => ({
+          setAnalogTasks(prev => ({
             ...prev,
             [patentId]: {
               taskId,
@@ -58,10 +75,10 @@ export function AnalogTaskProvider({ children }) {
           }))
         }
       } catch (error) {
-        clearInterval(intervalsRef.current[patentId])
-        delete intervalsRef.current[patentId]
+        clearInterval(analogIntervalsRef.current[patentId])
+        delete analogIntervalsRef.current[patentId]
 
-        setTasks(prev => ({
+        setAnalogTasks(prev => ({
           ...prev,
           [patentId]: {
             taskId,
@@ -74,12 +91,61 @@ export function AnalogTaskProvider({ children }) {
     }, 2000)
   }, [])
 
-  const startTask = useCallback(async (patentId) => {
+  const restoreComparePolling = useCallback((patentId, taskId) => {
+    compareIntervalsRef.current[patentId] = setInterval(async () => {
+      try {
+        const result = await analogService.getCompareResult(taskId)
+
+        if (result.status === TASK_STATUS.SUCCESS) {
+          clearInterval(compareIntervalsRef.current[patentId])
+          delete compareIntervalsRef.current[patentId]
+
+          setCompareTasks(prev => ({
+            ...prev,
+            [patentId]: {
+              taskId,
+              status: TASK_STATUS.SUCCESS,
+              data: result.data,
+              error: null
+            }
+          }))
+        } else if (result.status === TASK_STATUS.FAILED || result.status === TASK_STATUS.CANCELLED) {
+          clearInterval(compareIntervalsRef.current[patentId])
+          delete compareIntervalsRef.current[patentId]
+
+          setCompareTasks(prev => ({
+            ...prev,
+            [patentId]: {
+              taskId,
+              status: result.status,
+              data: null,
+              error: result.message
+            }
+          }))
+        }
+      } catch (error) {
+        clearInterval(compareIntervalsRef.current[patentId])
+        delete compareIntervalsRef.current[patentId]
+
+        setCompareTasks(prev => ({
+          ...prev,
+          [patentId]: {
+            taskId,
+            status: TASK_STATUS.FAILED,
+            data: null,
+            error: error.message
+          }
+        }))
+      }
+    }, 2000)
+  }, [])
+
+  const startAnalogTask = useCallback(async (patentId) => {
     try {
       const createResponse = await analogService.createAnalogLink(patentId)
       const taskId = createResponse.task_id
 
-      setTasks(prev => ({
+      setAnalogTasks(prev => ({
         ...prev,
         [patentId]: {
           taskId,
@@ -89,15 +155,15 @@ export function AnalogTaskProvider({ children }) {
         }
       }))
 
-      if (intervalsRef.current[patentId]) {
-        clearInterval(intervalsRef.current[patentId])
+      if (analogIntervalsRef.current[patentId]) {
+        clearInterval(analogIntervalsRef.current[patentId])
       }
 
-      restorePolling(patentId, taskId)
+      restoreAnalogPolling(patentId, taskId)
 
       return taskId
     } catch (error) {
-      setTasks(prev => ({
+      setAnalogTasks(prev => ({
         ...prev,
         [patentId]: {
           taskId: null,
@@ -108,18 +174,70 @@ export function AnalogTaskProvider({ children }) {
       }))
       throw error
     }
-  }, [restorePolling])
+  }, [restoreAnalogPolling])
 
-  const getTask = useCallback((patentId) => {
-    return tasks[patentId]
-  }, [tasks])
+  const startCompareTask = useCallback(async (patentId) => {
+    try {
+      const createResponse = await analogService.createAnalogCompare(patentId)
+      const taskId = createResponse.task_id
 
-  const clearTask = useCallback((patentId) => {
-    if (intervalsRef.current[patentId]) {
-      clearInterval(intervalsRef.current[patentId])
-      delete intervalsRef.current[patentId]
+      setCompareTasks(prev => ({
+        ...prev,
+        [patentId]: {
+          taskId,
+          status: TASK_STATUS.RUNNING,
+          data: null,
+          error: null
+        }
+      }))
+
+      if (compareIntervalsRef.current[patentId]) {
+        clearInterval(compareIntervalsRef.current[patentId])
+      }
+
+      restoreComparePolling(patentId, taskId)
+
+      return taskId
+    } catch (error) {
+      setCompareTasks(prev => ({
+        ...prev,
+        [patentId]: {
+          taskId: null,
+          status: TASK_STATUS.FAILED,
+          data: null,
+          error: error.message
+        }
+      }))
+      throw error
     }
-    setTasks(prev => {
+  }, [restoreComparePolling])
+
+  const getAnalogTask = useCallback((patentId) => {
+    return analogTasks[patentId]
+  }, [analogTasks])
+
+  const getCompareTask = useCallback((patentId) => {
+    return compareTasks[patentId]
+  }, [compareTasks])
+
+  const clearAnalogTask = useCallback((patentId) => {
+    if (analogIntervalsRef.current[patentId]) {
+      clearInterval(analogIntervalsRef.current[patentId])
+      delete analogIntervalsRef.current[patentId]
+    }
+    setAnalogTasks(prev => {
+      const newTasks = { ...prev }
+      delete newTasks[patentId]
+      return newTasks
+    })
+  }, [])
+
+  const clearCompareTask = useCallback((patentId) => {
+    if (compareIntervalsRef.current[patentId]) {
+      clearInterval(compareIntervalsRef.current[patentId])
+      delete compareIntervalsRef.current[patentId]
+    }
+    setCompareTasks(prev => {
       const newTasks = { ...prev }
       delete newTasks[patentId]
       return newTasks
@@ -127,20 +245,22 @@ export function AnalogTaskProvider({ children }) {
   }, [])
 
   const clearTaskForPatent = useCallback((patentId) => {
-    if (intervalsRef.current[patentId]) {
-      clearInterval(intervalsRef.current[patentId])
-      delete intervalsRef.current[patentId]
-    }
-    
-    setTasks(prev => {
-      const newTasks = { ...prev }
-      delete newTasks[patentId]
-      return newTasks
-    })
-  }, [])
+    clearAnalogTask(patentId)
+    clearCompareTask(patentId)
+  }, [clearAnalogTask, clearCompareTask])
 
   return (
-    <AnalogTaskContext.Provider value={{ startTask, getTask, clearTask, clearTaskForPatent, tasks }}>
+    <AnalogTaskContext.Provider value={{ 
+      startTask: startAnalogTask,
+      getTask: getAnalogTask, 
+      clearTask: clearAnalogTask,
+      startCompareTask,
+      getCompareTask,
+      clearCompareTask,
+      clearTaskForPatent,  
+      analogTasks,
+      compareTasks
+    }}>
       {children}
     </AnalogTaskContext.Provider>
   )

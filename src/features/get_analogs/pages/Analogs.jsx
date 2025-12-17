@@ -256,7 +256,7 @@ export default function Analogs() {
               onClick={handleGetLinksAndClaims}
               disabled={loading}
             >
-              Получить ссылки и формулы
+              Найти аналоги
             </button>
             <button 
               className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
