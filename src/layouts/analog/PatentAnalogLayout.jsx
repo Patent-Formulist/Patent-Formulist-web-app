@@ -7,6 +7,7 @@ import { TASK_STATUS } from '../../services/analog/analogService'
 import styles from './styles/PatentAnalogLayout.module.css'
 
 
+
 export default function PatentAnalogLayout() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -18,11 +19,15 @@ export default function PatentAnalogLayout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+
   const task = getTask(id)
   const isCompleted = task?.status === TASK_STATUS.SUCCESS && task?.data
+  const isTaskRunning = task?.status === TASK_STATUS.RUNNING
+
 
   useEffect(() => {
     let isMounted = true
+
 
     ;(async () => {
       try {
@@ -41,14 +46,17 @@ export default function PatentAnalogLayout() {
       }
     })()
 
+
     return () => {
       isMounted = false
     }
   }, [id])
 
+
   const isActive = (path) => {
     return location.pathname === `/workspace/patents/${id}${path}`
   }
+
 
   const handleNavigate = (path) => {
     if ((path === '/attributes' || path === '/prototype') && !isCompleted) {
@@ -58,20 +66,23 @@ export default function PatentAnalogLayout() {
     navigate(`/workspace/patents/${id}${path}`)
   }
 
+
   if (loading) {
     return <div className={styles.container}>Загрузка...</div>
   }
 
+
   if (error) {
     return <div className={styles.container}>{error}</div>
   }
+
 
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>{patent?.name}</h2>
       <div className={styles.buttonContainer}>
         <button 
-          className={`${styles.actionButton} ${isActive('/analogs') ? styles.activeButton : ''}`}
+          className={`${styles.actionButton} ${isActive('/analogs') ? styles.activeButton : ''} ${isTaskRunning ? styles.loading : ''} ${isCompleted ? styles.completed : ''}`}
           onClick={() => handleNavigate('/analogs')}
         >
           Поиск аналогов

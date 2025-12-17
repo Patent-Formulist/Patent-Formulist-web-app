@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { createPortal } from 'react-dom'
 import { useAnalogTask } from '../../../contexts/AnalogTaskContext'
 import { useToast } from '../../../contexts/ToastContext'
 import { TASK_STATUS } from '../../../services/analog/analogService'
 import * as XLSX from 'xlsx'
 import styles from '../styles/Analogs.module.css'
+
 
 
 const downloadExcel = (analogs, patentId, type = 'full') => {
@@ -35,6 +37,7 @@ const downloadExcel = (analogs, patentId, type = 'full') => {
     ])
   }
 
+
   const data = [headers, ...rows]
   const worksheet = XLSX.utils.aoa_to_sheet(data)
   
@@ -46,13 +49,16 @@ const downloadExcel = (analogs, patentId, type = 'full') => {
   
   worksheet['!cols'] = colWidths
 
+
   const workbook = XLSX.utils.book_new()
   const sheetName = type === 'links' ? 'Ссылки' : type === 'claims' ? 'Формулы' : 'Аналоги'
   XLSX.utils.book_append_sheet(workbook, worksheet, sheetName)
 
+
   const fileName = `analogs_${type}_${patentId}_${new Date().toISOString().slice(0, 10)}.xlsx`
   XLSX.writeFile(workbook, fileName)
 }
+
 
 
 export default function Analogs() {
@@ -60,7 +66,8 @@ export default function Analogs() {
   const { startTask, getTask } = useAnalogTask()
   const { showWarning, showSuccess } = useToast()
   
-  const [viewMode, setViewMode] = useState('main') 
+  const [viewMode, setViewMode] = useState('main')
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false)
   
   const task = getTask(id)
   const loading = task?.status === TASK_STATUS.RUNNING
@@ -68,7 +75,13 @@ export default function Analogs() {
   const analogs = task?.data
   const isCompleted = task?.status === TASK_STATUS.SUCCESS && analogs
 
+
   const handleGetLinksAndClaims = async () => {
+    if (isCompleted) {
+      setConfirmModalVisible(true)
+      return
+    }
+    
     try {
       await startTask(id)
     } catch (err) {
@@ -76,15 +89,33 @@ export default function Analogs() {
     }
   }
 
+
+  const confirmRestart = async () => {
+    setConfirmModalVisible(false)
+    try {
+      await startTask(id)
+    } catch (err) {
+      console.error('Ошибка запуска задачи:', err)
+    }
+  }
+
+
+  const cancelRestart = () => {
+    setConfirmModalVisible(false)
+  }
+
+
   const handleDownloadLinksAndClaims = () => {
     if (!isCompleted) {
       showWarning('Сначала выполните получение ссылок и формул')
       return
     }
 
+
     downloadExcel(analogs, id, 'full')
     showSuccess('Файл успешно скачан')
   }
+
 
   const handleGetLinks = () => {
     if (!isCompleted) {
@@ -94,6 +125,7 @@ export default function Analogs() {
     setViewMode('links')
   }
 
+
   const handleGetClaims = () => {
     if (!isCompleted) {
       showWarning('Сначала выполните получение ссылок и формул')
@@ -102,19 +134,23 @@ export default function Analogs() {
     setViewMode('claims')
   }
 
+
   const handleDownloadLinks = () => {
     downloadExcel(analogs, id, 'links')
     showSuccess('Ссылки успешно скачаны')
   }
+
 
   const handleDownloadClaims = () => {
     downloadExcel(analogs, id, 'claims')
     showSuccess('Формулы успешно скачаны')
   }
 
+
   const handleBackToMain = () => {
     setViewMode('main')
   }
+
 
   const renderLinks = () => (
     <div className={styles.tableContainer}>
@@ -148,6 +184,7 @@ export default function Analogs() {
     </div>
   )
 
+
   const renderClaims = () => (
     <div className={styles.tableContainer}>
       <table className={styles.table}>
@@ -170,6 +207,7 @@ export default function Analogs() {
       </table>
     </div>
   )
+
 
   const renderFull = () => (
     <div className={styles.tableContainer}>
@@ -207,81 +245,120 @@ export default function Analogs() {
     </div>
   )
 
+
   return (
-    <div className={styles.container}>      
-      {viewMode === 'main' && (
-        <div className={styles.buttonContainer}>
-          <button 
-            className={styles.actionButton}
-            onClick={handleGetLinksAndClaims}
-            disabled={loading}
-          >
-            {loading ? 'Загрузка...' : 'Получить ссылки и формулы'}
-          </button>
-          <button 
-            className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
-            onClick={handleDownloadLinksAndClaims}
-          >
-            Скачать ссылки и формулы
-          </button>
-          <button 
-            className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
-            onClick={handleGetLinks}
-          >
-            Получить ссылки
-          </button>
-          <button 
-            className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
-            onClick={handleGetClaims}
-          >
-            Получить формулы
-          </button>
-        </div>
-      )}
+    <>
+      <div className={styles.container}>      
+        {viewMode === 'main' && (
+          <div className={styles.buttonContainer}>
+            <button 
+              className={`${styles.actionButton} ${loading ? styles.loading : ''} ${isCompleted ? styles.completed : ''}`}
+              onClick={handleGetLinksAndClaims}
+              disabled={loading}
+            >
+              Получить ссылки и формулы
+            </button>
+            <button 
+              className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
+              onClick={handleDownloadLinksAndClaims}
+            >
+              Скачать ссылки и формулы
+            </button>
+            <button 
+              className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
+              onClick={handleGetLinks}
+            >
+              Получить ссылки
+            </button>
+            <button 
+              className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
+              onClick={handleGetClaims}
+            >
+              Получить формулы
+            </button>
+          </div>
+        )}
 
-      {viewMode === 'links' && (
-        <div className={styles.buttonContainer}>
-          <button 
-            className={styles.actionButton}
-            onClick={handleBackToMain}
-          >
-            Назад
-          </button>
-          <button 
-            className={styles.actionButton}
-            onClick={handleDownloadLinks}
-          >
-            Скачать ссылки
-          </button>
-        </div>
-      )}
 
-      {viewMode === 'claims' && (
-        <div className={styles.buttonContainer}>
-          <button 
-            className={styles.actionButton}
-            onClick={handleBackToMain}
-          >
-            Назад
-          </button>
-          <button 
-            className={styles.actionButton}
-            onClick={handleDownloadClaims}
-          >
-            Скачать формулы
-          </button>
-        </div>
-      )}
+        {viewMode === 'links' && (
+          <div className={styles.buttonContainer}>
+            <button 
+              className={styles.actionButton}
+              onClick={handleBackToMain}
+            >
+              Назад
+            </button>
+            <button 
+              className={styles.actionButton}
+              onClick={handleDownloadLinks}
+            >
+              Скачать ссылки
+            </button>
+          </div>
+        )}
 
-      {error && (
-        <div className={styles.error}>
-          {error}
-        </div>
-      )}
 
-      {analogs && viewMode === 'main' && renderFull()}
-      {analogs && viewMode === 'links' && renderLinks()}
-      {analogs && viewMode === 'claims' && renderClaims()}
-    </div>
+        {viewMode === 'claims' && (
+          <div className={styles.buttonContainer}>
+            <button 
+              className={styles.actionButton}
+              onClick={handleBackToMain}
+            >
+              Назад
+            </button>
+            <button 
+              className={styles.actionButton}
+              onClick={handleDownloadClaims}
+            >
+              Скачать формулы
+            </button>
+          </div>
+        )}
+
+
+        {error && (
+          <div className={styles.error}>
+            {error}
+          </div>
+        )}
+
+
+        {analogs && viewMode === 'main' && renderFull()}
+        {analogs && viewMode === 'links' && renderLinks()}
+        {analogs && viewMode === 'claims' && renderClaims()}
+      </div>
+
+
+      {confirmModalVisible && createPortal(
+        <div className={styles.modalOverlay} onClick={cancelRestart}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.modalTitle}>Повторный поиск аналогов?</h3>
+            <p className={styles.modalText}>
+              Вы уверены, что хотите выполнить повторный поиск аналогов?
+            </p>
+            <p className={styles.modalWarning}>
+              Данные следующих шагов (Атрибуты аналогов и Прототип) станут неактуальными и их нужно будет обновить.
+            </p>
+            <div className={styles.modalButtons}>
+              <button 
+                className={styles.modalCancelButton} 
+                onClick={cancelRestart}
+                type="button"
+              >
+                Отмена
+              </button>
+              <button 
+                className={styles.modalConfirmButton} 
+                onClick={confirmRestart}
+                type="button"
+              >
+                Продолжить
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+    </>
   )
 }
