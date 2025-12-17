@@ -24,7 +24,7 @@ import WorkspaceMain from './layouts/workspace/WorkspaceMain'
 import PatentCreation from './features/patent_creation/pages/PatentCreation'
 import PatentEdit from './features/patent_edit/pages/PatentEdit'
 
-import Analogs from './features/analog/pages/Analogs'
+import Analogs from './features/get_analogs/pages/Analogs'
 
 import ProfileMain from './features/profile/pages/ProfileMain'
 import ProfileSettings from './features/profile/pages/ProfileSettings'
