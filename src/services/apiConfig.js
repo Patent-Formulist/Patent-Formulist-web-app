@@ -1,4 +1,4 @@
-const URL = '/api';
+const URL = '/api/v1';
 
 export const API_AUTH_ENDPOINTS = {
   LOGIN:    `${URL}/login`,
@@ -27,8 +27,8 @@ export const API_PROFILE_ENDPOINTS = {
 }
 
 export const API_REFERENCE_ENDPOINTS = {
-  ANALOG_CREATE_LINK: `${URL}/v1/analog/link`,
-  ANALOG_GET_RESULT:  (taskId) => `${URL}/v1/analog/result/${taskId}`,
-  ANALOG_COMPARE: `${URL}/v1/analog/compare`,
-  ANALOG_COMPARE_RESULT: (taskId) => `${URL}/v1/analog/compare/result/${taskId}`,
+  ANALOG_CREATE_LINK: `${URL}/analog/link`,
+  ANALOG_GET_RESULT:  (taskId) => `${URL}/analog/result/${taskId}`,
+  ANALOG_COMPARE: `${URL}/analog/compare`,
+  ANALOG_COMPARE_RESULT: (taskId) => `${URL}/analog/compare/result/${taskId}`,
 }
