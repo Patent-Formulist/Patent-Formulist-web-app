@@ -1,98 +1,209 @@
-import { API_AUTH_ENDPOINTS } from '../apiConfig';
+import { APP_CONFIG } from '../appConfig'
+import { MOCK_USERS } from '../mocks/mockData'
+import { mockDelay } from '../mocks/mockUtils'
+import { API_AUTH_ENDPOINTS } from '../apiConfig'
 
 class AuthService {
   saveTokens(accessToken, refreshToken) {
-    localStorage.setItem('access_token', accessToken);
-    localStorage.setItem('refresh_token', refreshToken);
+    localStorage.setItem('accessToken', accessToken)
+    localStorage.setItem('refreshToken', refreshToken)
   }
 
   getAccessToken() {
-    return localStorage.getItem('access_token');
+    return localStorage.getItem('accessToken')
   }
 
   getRefreshToken() {
-    return localStorage.getItem('refresh_token');
+    return localStorage.getItem('refreshToken')
   }
 
   clearTokens() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
   }
 
   async login(email, password) {
+    if (APP_CONFIG.USE_OFFLINE_MODE) {
+      await mockDelay(null)
+      
+      const user = MOCK_USERS[email]
+      if (!user || user.password !== password) {
+        throw new Error('Неверный email или пароль')
+      }
+      
+      this.saveTokens(user.tokens.access, user.tokens.refresh)
+      return user.tokens
+    }
+
     const response = await fetch(API_AUTH_ENDPOINTS.LOGIN, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
-    });
+    })
 
     if (!response.ok) {
       if (response.status === 500) {
-        throw new Error('Ошибка сервера');
+        throw new Error('Ошибка сервера')
       }
-      throw new Error('Неверный логин или пароль');
+      throw new Error('Ошибка авторизации')
     }
 
-    const data = await response.json();
-    this.saveTokens(data.access, data.refresh);
-    return data;
+    const data = await response.json()
+    this.saveTokens(data.access, data.refresh)
+    return data
   }
 
   async register(email, password) {
+    if (APP_CONFIG.USE_OFFLINE_MODE) {
+      await mockDelay(null)
+      
+      if (MOCK_USERS[email]) {
+        throw new Error('Пользователь с таким email уже существует')
+      }
+      
+      const tokens = {
+        access: `mock_access_${Date.now()}`,
+        refresh: `mock_refresh_${Date.now()}`
+      }
+      
+      MOCK_USERS[email] = {
+        email,
+        password,
+        tokens,
+        profile: {
+          name: email.split('@')[0],
+          about: '',
+          email,
+          avatar: null
+        },
+        settings: {
+          isExpert: false,
+          aiModel: 'GPT-4',
+          subscription: 'Free'
+        }
+      }
+      
+      this.saveTokens(tokens.access, tokens.refresh)
+      return tokens
+    }
+
     const response = await fetch(API_AUTH_ENDPOINTS.REGISTER, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
-    });
+    })
 
     if (!response.ok) {
       switch (response.status) {
         case 400:
-          throw new Error('Попробуйте другую почту');
+          throw new Error('Неверные данные')
         case 422:
-          throw new Error('Введите почту в формате user@example.com');
+          throw new Error('Email должен быть вида user@example.com')
         default:
-          throw new Error('Ошибка сервера');
+          throw new Error('Ошибка регистрации')
       }
     }
 
-    const data = await response.json();
-    this.saveTokens(data.access, data.refresh);
-    return data;
+    const data = await response.json()
+    this.saveTokens(data.access, data.refresh)
+    return data
+  }
+
+  async validate() {
+    if (APP_CONFIG.USE_OFFLINE_MODE) {
+      const token = this.getAccessToken()
+      return !!token
+    }
+
+    const token = this.getAccessToken()
+    if (!token) return false
+
+    try {
+      const response = await fetch(API_AUTH_ENDPOINTS.VALIDATE, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      return response.ok
+    } catch {
+      return false
+    }
   }
 
   async refreshAccessToken() {
-    const refreshToken = this.getRefreshToken();
+    if (APP_CONFIG.USE_OFFLINE_MODE) {
+      await mockDelay(null)
+      const refreshToken = this.getRefreshToken()
+      if (!refreshToken) {
+        throw new Error('Refresh token отсутствует')
+      }
+      
+      const newAccess = `mock_access_refreshed_${Date.now()}`
+      const newRefresh = `mock_refresh_refreshed_${Date.now()}`
+      this.saveTokens(newAccess, newRefresh)
+      
+      return { access: newAccess, refresh: newRefresh }
+    }
+
+    const refreshToken = this.getRefreshToken()
     if (!refreshToken) {
-      throw new Error('No refresh token');
+      throw new Error('Refresh token отсутствует')
     }
 
     const response = await fetch(API_AUTH_ENDPOINTS.REFRESH, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${refreshToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh: refreshToken }),
+    })
 
     if (!response.ok) {
-      this.clearTokens();
-      window.location.href = '/login';
-      throw new Error('Refresh failed');
+      this.clearTokens()
+      window.location.href = '/login'
+      throw new Error('Не удалось обновить токен')
     }
 
-    const data = await response.json();
-    this.saveTokens(data.access, data.refresh);
-    return data.access;
+    const data = await response.json()
+    this.saveTokens(data.access, data.refresh)
+    return data
+  }
+
+  async authenticatedFetch(url, options = {}) {
+    if (APP_CONFIG.USE_OFFLINE_MODE) {
+      return null
+    }
+
+    const token = this.getAccessToken()
+    const headers = {
+      ...options.headers,
+      Authorization: `Bearer ${token}`,
+    }
+
+    let response = await fetch(url, { ...options, headers })
+
+    if (response.status === 401) {
+      try {
+        await this.refreshAccessToken()
+        const newToken = this.getAccessToken()
+        headers.Authorization = `Bearer ${newToken}`
+        response = await fetch(url, { ...options, headers })
+      } catch {
+        this.clearTokens()
+        window.location.href = '/login'
+        throw new Error('Сессия истекла')
+      }
+    }
+
+    return response
   }
 
   async logout() {
+    if (APP_CONFIG.USE_OFFLINE_MODE) {
+      this.clearTokens()
+      window.location.href = '/login'
+      return
+    }
+
     try {
-      const token = this.getAccessToken();
+      const token = this.getAccessToken()
       if (token) {
         await fetch(API_AUTH_ENDPOINTS.LOGOUT, {
           method: 'POST',
@@ -100,91 +211,13 @@ class AuthService {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-        });
+        })
       }
     } finally {
-      this.clearTokens();
-      window.location.href = '/login';
+      this.clearTokens()
+      window.location.href = '/login'
     }
-  }
-
-  async validate() {
-    const token = this.getAccessToken();
-    if (!token) return false;
-
-    const response = await fetch(API_AUTH_ENDPOINTS.VALIDATE, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    return response.ok;
-  }
-
-  async authenticatedFetch(url, options = {}) {
-    let token = this.getAccessToken();
-    const refreshToken = this.getRefreshToken();
-
-    if (!token && !refreshToken) {
-      this.clearTokens();
-      window.__REDIRECTING__ = true;
-      window.location.href = '/login';
-      return new Promise(() => {}); 
-    }
-
-    if (!token && refreshToken) {
-      try {
-        token = await this.refreshAccessToken();
-      } catch (e) {
-        this.clearTokens();
-        window.__REDIRECTING__ = true;
-        window.location.href = '/login';
-        return new Promise(() => {});
-      }
-    }
-
-    const baseHeaders = {
-      ...options.headers,
-    };
-
-    if (token) {
-      baseHeaders.Authorization = `Bearer ${token}`;
-    }
-
-    if (!('Content-Type' in baseHeaders) && options.body) {
-      baseHeaders['Content-Type'] = 'application/json';
-    }
-
-    const config = {
-      ...options,
-      headers: baseHeaders,
-    };
-
-    let response = await fetch(url, config);
-
-    if (response.status === 401 && !options._isRetry && refreshToken) {
-      try {
-        const newAccess = await this.refreshAccessToken();
-        const retryConfig = {
-          ...config,
-          headers: {
-            ...config.headers,
-            Authorization: `Bearer ${newAccess}`,
-          },
-          _isRetry: true,
-        };
-        response = await fetch(url, retryConfig);
-      } catch (error) {
-        this.clearTokens();
-        window.__REDIRECTING__ = true;
-        window.location.href = '/login';
-        return new Promise(() => {});
-      }
-    }
-
-    return response;
   }
 }
 
-export default new AuthService();
+export default new AuthService()

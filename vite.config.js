@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-
+import { APP_CONFIG } from './src/config/appConfig'
 
 export default defineConfig({
   plugins: [react()],
@@ -9,7 +9,7 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'http://formulinked.ru',    
+        target: APP_CONFIG.PROXY_TARGET,
         changeOrigin: true,
         secure: false,
       },
