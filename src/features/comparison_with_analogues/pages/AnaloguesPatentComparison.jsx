@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { useReference } from '../../../contexts/ReferenceContext'
@@ -80,18 +80,37 @@ const downloadExcel = (data, patentId) => {
 
 export default function AnaloguesPatentComparison() {
   const { id } = useParams()
-  const { startCompareTask, getCompareTask } = useReference()
-  const { showWarning, showSuccess } = useToast()
+  const { startCompareTask, getCompareTask, getTask } = useReference()
+  const { showWarning, showSuccess, showError } = useToast()
   
   const [confirmModalVisible, setConfirmModalVisible] = useState(false)
+  const [prevStatus, setPrevStatus] = useState(null)
   
+  const analogTask = getTask(id)
   const task = getCompareTask(id)
   const loading = task?.status === TASK_STATUS.RUNNING
   const error = task?.error
   const comparisonData = task?.data
   const isCompleted = task?.status === TASK_STATUS.SUCCESS && comparisonData
+  const isAnalogCompleted = analogTask?.status === TASK_STATUS.SUCCESS
+
+  useEffect(() => {
+    if (task?.status !== prevStatus) {
+      if (task?.status === TASK_STATUS.SUCCESS) {
+        showSuccess('Сопоставление патента с аналогами успешно выполнено')
+      } else if (task?.status === TASK_STATUS.FAILED) {
+        showError(task?.error || 'Ошибка сопоставления патента с аналогами')
+      }
+      setPrevStatus(task?.status)
+    }
+  }, [task?.status, task?.error, prevStatus, showSuccess, showError])
 
   const handleCompare = async () => {
+    if (!isAnalogCompleted) {
+      showWarning('Сначала выполните поиск аналогов')
+      return
+    }
+
     if (isCompleted) {
       setConfirmModalVisible(true)
       return
@@ -100,7 +119,7 @@ export default function AnaloguesPatentComparison() {
     try {
       await startCompareTask(id)
     } catch (err) {
-      console.error('Ошибка запуска задачи:', err)
+      showError(err.message || 'Ошибка запуска задачи сопоставления')
     }
   }
 
@@ -109,7 +128,7 @@ export default function AnaloguesPatentComparison() {
     try {
       await startCompareTask(id)
     } catch (err) {
-      console.error('Ошибка запуска задачи:', err)
+      showError(err.message || 'Ошибка запуска задачи сопоставления')
     }
   }
 
@@ -123,8 +142,12 @@ export default function AnaloguesPatentComparison() {
       return
     }
 
-    downloadExcel(comparisonData, id)
-    showSuccess('Таблица сопоставления успешно скачана')
+    try {
+      downloadExcel(comparisonData, id)
+      showSuccess('Таблица сопоставления успешно скачана')
+    } catch (err) {
+      showError('Ошибка при скачивании таблицы сопоставления')
+    }
   }
 
   const renderComparisonTable = () => {
@@ -203,12 +226,6 @@ export default function AnaloguesPatentComparison() {
             Скачать таблицу сопоставления
           </button>
         </div>
-
-        {error && (
-          <div className={styles.error}>
-            {error}
-          </div>
-        )}
 
         {comparisonData && renderComparisonTable()}
       </div>

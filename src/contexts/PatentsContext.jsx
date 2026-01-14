@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useCallback } from 'react'
 import patentService from '../services/patent/patentService'
+import { useToast } from './ToastContext'
 
 const PatentsContext = createContext()
 
@@ -13,8 +14,7 @@ export function PatentsProvider({ children }) {
       const data = await patentService.getUserPatents()
       setPatents(data)
     } catch (e) {
-      console.error('Ошибка загрузки патентов:', e)
-      alert(`Ошибка загрузки патентов: ${e.message}`)
+      showError(error.message || 'Ошибка загрузки патентов')
     } finally {
       setLoading(false)
     }

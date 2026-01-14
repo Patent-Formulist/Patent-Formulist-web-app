@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { usePatents } from '../../../contexts/PatentsContext'
 import { useReference } from '../../../contexts/ReferenceContext'
+import { useToast } from '../../../contexts/ToastContext'
 import { createPortal } from 'react-dom'
 
 import styles from '../styles/PatentButton.module.css'
@@ -101,7 +102,7 @@ export default function PatentButton({ patent, isActive, isPanelVisible }) {
                 navigate('/workspace')
             }
         } catch (e) {
-            alert(`Ошибка удаления патента: ${e.message}`)
+            showError(e.message || `Ошибка удаления патента`)
         }
     }
 

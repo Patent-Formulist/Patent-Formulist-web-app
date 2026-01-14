@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { useReference } from '../../../contexts/ReferenceContext'
@@ -80,10 +80,11 @@ const downloadPatentOnlyExcel = (patentFeatures, fileName) => {
 export default function Prototype() {
   const { id } = useParams()
   const { getCompareTask, startPrototypeTask, getPrototypeTask } = useReference()
-  const { showWarning, showSuccess } = useToast()
+  const { showWarning, showSuccess, showError } = useToast()
   
   const [confirmModalVisible, setConfirmModalVisible] = useState(false)
   const [viewMode, setViewMode] = useState('main')
+  const [prevStatus, setPrevStatus] = useState(null)
   
   const compareTask = getCompareTask(id)
   const prototypeTask = getPrototypeTask(id)
@@ -93,6 +94,17 @@ export default function Prototype() {
   const error = prototypeTask?.error
   const prototypeData = prototypeTask?.data
   const isCompleted = prototypeTask?.status === TASK_STATUS.SUCCESS && prototypeData
+
+  useEffect(() => {
+    if (prototypeTask?.status !== prevStatus) {
+      if (prototypeTask?.status === TASK_STATUS.SUCCESS) {
+        showSuccess('Характеристики прототипа успешно получены')
+      } else if (prototypeTask?.status === TASK_STATUS.FAILED) {
+        showError(prototypeTask?.error || 'Ошибка получения характеристик прототипа')
+      }
+      setPrevStatus(prototypeTask?.status)
+    }
+  }, [prototypeTask?.status, prototypeTask?.error, prevStatus, showSuccess, showError])
 
   const handleGetPrototype = async () => {
     if (!isCompareCompleted) {
@@ -108,7 +120,7 @@ export default function Prototype() {
     try {
       await startPrototypeTask(id)
     } catch (err) {
-      console.error('Ошибка запуска задачи:', err)
+      showError(err.message || 'Ошибка запуска задачи получения прототипа')
     }
   }
 
@@ -117,7 +129,7 @@ export default function Prototype() {
     try {
       await startPrototypeTask(id)
     } catch (err) {
-      console.error('Ошибка запуска задачи:', err)
+      showError(err.message || 'Ошибка запуска задачи получения прототипа')
     }
   }
 
@@ -131,8 +143,12 @@ export default function Prototype() {
       return
     }
 
-    downloadPrototypeExcel(prototypeData.prototype, id)
-    showSuccess('Характеристики прототипа успешно скачаны')
+    try {
+      downloadPrototypeExcel(prototypeData.prototype, id)
+      showSuccess('Характеристики прототипа успешно скачаны')
+    } catch (err) {
+      showError('Ошибка при скачивании характеристик прототипа')
+    }
   }
 
   const handleGetFeatures = () => {
@@ -168,12 +184,16 @@ export default function Prototype() {
       showWarning('Данные признаков недоступны')
       return
     }
-    downloadFeaturesExcel(
-      prototypeData.prototype_features,
-      prototypeData.patent_features,
-      `features_all_${id}_${new Date().toISOString().slice(0, 10)}.xlsx`
-    )
-    showSuccess('Признаки патента и прототипа успешно скачаны')
+    try {
+      downloadFeaturesExcel(
+        prototypeData.prototype_features,
+        prototypeData.patent_features,
+        `features_all_${id}_${new Date().toISOString().slice(0, 10)}.xlsx`
+      )
+      showSuccess('Признаки патента и прототипа успешно скачаны')
+    } catch (err) {
+      showError('Ошибка при скачивании признаков')
+    }
   }
 
   const handleDownloadPrototypeFeatures = () => {
@@ -181,11 +201,15 @@ export default function Prototype() {
       showWarning('Данные признаков прототипа недоступны')
       return
     }
-    downloadPrototypeOnlyExcel(
-      prototypeData.prototype_features,
-      `features_prototype_${id}_${new Date().toISOString().slice(0, 10)}.xlsx`
-    )
-    showSuccess('Признаки прототипа успешно скачаны')
+    try {
+      downloadPrototypeOnlyExcel(
+        prototypeData.prototype_features,
+        `features_prototype_${id}_${new Date().toISOString().slice(0, 10)}.xlsx`
+      )
+      showSuccess('Признаки прототипа успешно скачаны')
+    } catch (err) {
+      showError('Ошибка при скачивании признаков прототипа')
+    }
   }
 
   const handleDownloadPatentFeatures = () => {
@@ -193,11 +217,15 @@ export default function Prototype() {
       showWarning('Данные признаков патента недоступны')
       return
     }
-    downloadPatentOnlyExcel(
-      prototypeData.patent_features,
-      `features_patent_${id}_${new Date().toISOString().slice(0, 10)}.xlsx`
-    )
-    showSuccess('Признаки патента успешно скачаны')
+    try {
+      downloadPatentOnlyExcel(
+        prototypeData.patent_features,
+        `features_patent_${id}_${new Date().toISOString().slice(0, 10)}.xlsx`
+      )
+      showSuccess('Признаки патента успешно скачаны')
+    } catch (err) {
+      showError('Ошибка при скачивании признаков патента')
+    }
   }
 
   const renderPrototypeTable = () => {
@@ -429,12 +457,6 @@ export default function Prototype() {
             >
               Скачать признаки
             </button>
-          </div>
-        )}
-
-        {error && (
-          <div className={styles.error}>
-            {error}
           </div>
         )}
 

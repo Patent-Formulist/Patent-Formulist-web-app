@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import { usePatents } from '../../../contexts/PatentsContext'
+import { useToast } from '../../../contexts/ToastContext'
 import patentService from '../../../services/patent/patentService'
 import styles from '../styles/PatentEdit.module.css'
 
@@ -68,6 +69,7 @@ export default function PatentEdit() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { loadPatents } = usePatents()
+  const { showSuccess, showError } = useToast()
 
   const { 
     register, 
@@ -88,13 +90,13 @@ export default function PatentEdit() {
           setValue(field.name, value)
         })
       } catch (error) {
-        alert(`Ошибка загрузки патента: ${error.message}`)
+        showError(error.message || 'Ошибка загрузки патента')
         navigate('/workspace')
       }
     }
 
     loadPatentData()
-  }, [id, setValue, navigate])
+  }, [id, setValue, navigate, showError])
 
   const onSubmit = async (data) => {
     try {
@@ -107,9 +109,10 @@ export default function PatentEdit() {
 
       await patentService.editPatent(id, patentData)
       await loadPatents()
+      showSuccess('Патент успешно обновлен')
       navigate('/workspace')
     } catch (error) {
-      alert(`Ошибка обновления патента: ${error.message}`)
+      showError(error.message || 'Ошибка обновления патента')
     }
   }
 

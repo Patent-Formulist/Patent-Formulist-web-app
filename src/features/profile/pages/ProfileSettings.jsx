@@ -48,7 +48,6 @@ export default function ProfileSettings() {
       const result = await profileService.updateSettings(settingsData)
       
       alert('Настройки успешно обновлены')
-      console.log('Результат:', result)
     } catch (error) {
       setErrorMessage(error.message || 'Ошибка сохранения')
     } finally {

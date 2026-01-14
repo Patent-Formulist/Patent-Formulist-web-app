@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { useReference } from '../../../contexts/ReferenceContext'
@@ -7,325 +7,160 @@ import { TASK_STATUS } from '../../../services/reference/referenceService'
 import * as XLSX from 'xlsx'
 import styles from '../styles/Analogues.module.css'
 
-const downloadExcel = (analogs, patentId, type = 'full') => {
-  let headers, rows
-  
-  if (type === 'links') {
-    headers = ['Номер', 'Название', 'Ссылка']
-    rows = Object.entries(analogs).map(([_, analog]) => [
-      analog.number || '',
-      analog.title || '',
-      analog.link || ''
-    ])
-  } else if (type === 'claims') {
-    headers = ['Номер', 'Название', 'Формула']
-    rows = Object.entries(analogs).map(([_, analog]) => [
-      analog.number || '',
-      analog.title || '',
-      analog.claims || ''
-    ])
-  } else {
-    headers = ['Номер', 'Название', 'Ссылка', 'Реферат', 'Формула']
-    rows = Object.entries(analogs).map(([_, analog]) => [
-      analog.number || '',
-      analog.title || '',
-      analog.link || '',
-      analog.abstract || '',
-      analog.claims || ''
-    ])
-  }
+const downloadExcel = (analogs, patentId) => {
+  const headers = ['Номер', 'Название', 'Ссылка', 'Реферат', 'Формула']
+  const rows = Object.values(analogs).map(analog => [
+    analog.number,
+    analog.title,
+    analog.link,
+    analog.abstract,
+    analog.claims
+  ])
 
-
-  const data = [headers, ...rows]
-  const worksheet = XLSX.utils.aoa_to_sheet(data)
-  
-  const colWidths = type === 'links' 
-    ? [{ wch: 15 }, { wch: 30 }, { wch: 50 }]
-    : type === 'claims'
-    ? [{ wch: 15 }, { wch: 30 }, { wch: 60 }]
-    : [{ wch: 15 }, { wch: 30 }, { wch: 50 }, { wch: 60 }, { wch: 60 }]
-  
-  worksheet['!cols'] = colWidths
-
+  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
+  worksheet['!cols'] = [
+    { wch: 15 },
+    { wch: 40 },
+    { wch: 50 },
+    { wch: 80 },
+    { wch: 80 }
+  ]
 
   const workbook = XLSX.utils.book_new()
-  const sheetName = type === 'links' ? 'Ссылки' : type === 'claims' ? 'Формулы' : 'Аналоги'
-  XLSX.utils.book_append_sheet(workbook, worksheet, sheetName)
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Аналоги')
 
-
-  const fileName = `analogs_${type}_${patentId}_${new Date().toISOString().slice(0, 10)}.xlsx`
+  const fileName = `analogs_${patentId}_${new Date().toISOString().slice(0, 10)}.xlsx`
   XLSX.writeFile(workbook, fileName)
 }
-
-
 
 export default function Analogues() {
   const { id } = useParams()
   const { startTask, getTask } = useReference()
-  const { showWarning, showSuccess } = useToast()
+  const { showWarning, showSuccess, showError } = useToast()
   
-  const [viewMode, setViewMode] = useState('main')
   const [confirmModalVisible, setConfirmModalVisible] = useState(false)
+  const [prevStatus, setPrevStatus] = useState(null)
   
   const task = getTask(id)
   const loading = task?.status === TASK_STATUS.RUNNING
   const error = task?.error
-  const analogs = task?.data
-  const isCompleted = task?.status === TASK_STATUS.SUCCESS && analogs
+  const analogsData = task?.data
+  const isCompleted = task?.status === TASK_STATUS.SUCCESS && analogsData
 
+  useEffect(() => {
+    if (task?.status !== prevStatus) {
+      if (task?.status === TASK_STATUS.SUCCESS) {
+        showSuccess('Аналоги успешно получены')
+      } else if (task?.status === TASK_STATUS.FAILED) {
+        showError(task?.error || 'Ошибка получения аналогов')
+      }
+      setPrevStatus(task?.status)
+    }
+  }, [task?.status, task?.error, prevStatus, showSuccess, showError])
 
-  const handleGetLinksAndClaims = async () => {
+  const handleGetAnalogs = async () => {
     if (isCompleted) {
       setConfirmModalVisible(true)
       return
     }
-    
+
     try {
       await startTask(id)
     } catch (err) {
-      console.error('Ошибка запуска задачи:', err)
+      showError(err.message || 'Ошибка запуска задачи поиска аналогов')
     }
   }
-
 
   const confirmRestart = async () => {
     setConfirmModalVisible(false)
     try {
       await startTask(id)
     } catch (err) {
-      console.error('Ошибка запуска задачи:', err)
+      showError(err.message || 'Ошибка запуска задачи поиска аналогов')
     }
   }
-
 
   const cancelRestart = () => {
     setConfirmModalVisible(false)
   }
 
-
-  const handleDownloadLinksAndClaims = () => {
+  const handleDownload = () => {
     if (!isCompleted) {
-      showWarning('Сначала выполните получение ссылок и формул')
+      showWarning('Сначала получите аналоги')
       return
     }
 
-
-    downloadExcel(analogs, id, 'full')
-    showSuccess('Файл успешно скачан')
-  }
-
-
-  const handleGetLinks = () => {
-    if (!isCompleted) {
-      showWarning('Сначала выполните получение ссылок и формул')
-      return
+    try {
+      downloadExcel(analogsData, id)
+      showSuccess('Аналоги успешно скачаны')
+    } catch (err) {
+      showError('Ошибка при скачивании аналогов')
     }
-    setViewMode('links')
   }
 
+  const renderAnalogsTable = () => {
+    if (!analogsData) return null
 
-  const handleGetClaims = () => {
-    if (!isCompleted) {
-      showWarning('Сначала выполните получение ссылок и формул')
-      return
-    }
-    setViewMode('claims')
+    return (
+      <div className={styles.tableWrapper}>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Номер</th>
+                <th>Название</th>
+                <th>Ссылка</th>
+                <th>Реферат</th>
+                <th>Формула</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.values(analogsData).map((analog, index) => (
+                <tr key={index}>
+                  <td>{analog.number}</td>
+                  <td>{analog.title}</td>
+                  <td>
+                    <a 
+                      href={analog.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className={styles.link}
+                    >
+                      Открыть
+                    </a>
+                  </td>
+                  <td>{analog.abstract}</td>
+                  <td>{analog.claims}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )
   }
-
-
-  const handleDownloadLinks = () => {
-    downloadExcel(analogs, id, 'links')
-    showSuccess('Ссылки успешно скачаны')
-  }
-
-
-  const handleDownloadClaims = () => {
-    downloadExcel(analogs, id, 'claims')
-    showSuccess('Формулы успешно скачаны')
-  }
-
-
-  const handleBackToMain = () => {
-    setViewMode('main')
-  }
-
-
-  const renderLinks = () => (
-    <div className={styles.tableContainer}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Номер</th>
-            <th>Название</th>
-            <th>Ссылка</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(analogs).map(([index, analog]) => (
-            <tr key={index}>
-              <td>{analog.number}</td>
-              <td>{analog.title}</td>
-              <td>
-                <a 
-                  href={analog.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  Открыть
-                </a>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-
-
-  const renderClaims = () => (
-    <div className={styles.tableContainer}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Номер</th>
-            <th>Название</th>
-            <th>Формула</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(analogs).map(([index, analog]) => (
-            <tr key={index}>
-              <td>{analog.number}</td>
-              <td>{analog.title}</td>
-              <td>{analog.claims}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-
-
-  const renderFull = () => (
-    <div className={styles.tableContainer}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Номер</th>
-            <th>Название</th>
-            <th>Ссылка</th>
-            <th>Реферат</th>
-            <th>Формула</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(analogs).map(([index, analog]) => (
-            <tr key={index}>
-              <td>{analog.number}</td>
-              <td>{analog.title}</td>
-              <td>
-                <a 
-                  href={analog.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  Открыть
-                </a>
-              </td>
-              <td>{analog.abstract}</td>
-              <td>{analog.claims}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-
 
   return (
     <>
-      <div className={styles.container}>      
-        {viewMode === 'main' && (
-          <div className={styles.buttonContainer}>
-            <button 
-              className={`${styles.actionButton} ${loading ? styles.loading : ''} ${isCompleted ? styles.completed : ''}`}
-              onClick={handleGetLinksAndClaims}
-              disabled={loading}
-            >
-              Найти аналоги
-            </button>
-            <button 
-              className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
-              onClick={handleDownloadLinksAndClaims}
-            >
-              Скачать ссылки и формулы
-            </button>
-            <button 
-              className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
-              onClick={handleGetLinks}
-            >
-              Получить ссылки
-            </button>
-            <button 
-              className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
-              onClick={handleGetClaims}
-            >
-              Получить формулы
-            </button>
-          </div>
-        )}
+      <div className={styles.container}>
+        <div className={styles.buttonContainer}>
+          <button 
+            className={`${styles.actionButton} ${loading ? styles.loading : ''} ${isCompleted ? styles.completed : ''}`}
+            onClick={handleGetAnalogs}
+            disabled={loading}
+          >
+            Получить аналоги
+          </button>
+          <button 
+            className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
+            onClick={handleDownload}
+          >
+            Скачать аналоги
+          </button>
+        </div>
 
-
-        {viewMode === 'links' && (
-          <div className={styles.buttonContainer}>
-            <button 
-              className={styles.actionButton}
-              onClick={handleBackToMain}
-            >
-              Назад
-            </button>
-            <button 
-              className={styles.actionButton}
-              onClick={handleDownloadLinks}
-            >
-              Скачать ссылки
-            </button>
-          </div>
-        )}
-
-
-        {viewMode === 'claims' && (
-          <div className={styles.buttonContainer}>
-            <button 
-              className={styles.actionButton}
-              onClick={handleBackToMain}
-            >
-              Назад
-            </button>
-            <button 
-              className={styles.actionButton}
-              onClick={handleDownloadClaims}
-            >
-              Скачать формулы
-            </button>
-          </div>
-        )}
-
-
-        {error && (
-          <div className={styles.error}>
-            {error}
-          </div>
-        )}
-
-
-        {analogs && viewMode === 'main' && renderFull()}
-        {analogs && viewMode === 'links' && renderLinks()}
-        {analogs && viewMode === 'claims' && renderClaims()}
+        {analogsData && renderAnalogsTable()}
       </div>
-
 
       {confirmModalVisible && createPortal(
         <div className={styles.modalOverlay} onClick={cancelRestart}>
@@ -335,7 +170,7 @@ export default function Analogues() {
               Вы уверены, что хотите выполнить повторный поиск аналогов?
             </p>
             <p className={styles.modalWarning}>
-              Данные следующих шагов (Атрибуты аналогов и Прототип) станут неактуальными и их нужно будет обновить.
+              Данные следующих шагов (Сопоставление, Прототип) станут неактуальными и их нужно будет обновить.
             </p>
             <div className={styles.modalButtons}>
               <button 

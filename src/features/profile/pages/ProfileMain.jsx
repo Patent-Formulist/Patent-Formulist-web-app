@@ -64,7 +64,6 @@ export default function ProfileMain() {
       localStorage.removeItem(FORM_STORAGE_KEY)
       
       alert('Профиль успешно обновлен')
-      console.log('Результат:', result)
     } catch (error) {
       setErrorMessage(error.message || 'Ошибка сохранения')
       shouldSaveRef.current = true
@@ -103,7 +102,6 @@ export default function ProfileMain() {
       try {
         setLoading(true)
         const result = await profileService.uploadAvatar(file)
-        console.log('Загрузка аватара:', result)
         alert('Аватар успешно загружен')
       } catch (error) {
         setErrorMessage(error.message || 'Ошибка загрузки аватара')
