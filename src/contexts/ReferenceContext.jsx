@@ -5,6 +5,7 @@ const ReferenceContext = createContext()
 
 const STORAGE_KEY_ANALOGS = 'analog_tasks'
 const STORAGE_KEY_COMPARE = 'compare_tasks'
+const STORAGE_KEY_PROTOTYPE = 'prototype_tasks'
 
 export function ReferenceProvider({ children }) {
   const [analogTasks, setAnalogTasks] = useState(() => {
@@ -17,8 +18,14 @@ export function ReferenceProvider({ children }) {
     return saved ? JSON.parse(saved) : {}
   })
 
+  const [prototypeTasks, setPrototypeTasks] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_KEY_PROTOTYPE)
+    return saved ? JSON.parse(saved) : {}
+  })
+
   const analogIntervalsRef = useRef({})
   const compareIntervalsRef = useRef({})
+  const prototypeIntervalsRef = useRef({})
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY_ANALOGS, JSON.stringify(analogTasks))
@@ -27,6 +34,10 @@ export function ReferenceProvider({ children }) {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY_COMPARE, JSON.stringify(compareTasks))
   }, [compareTasks])
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_PROTOTYPE, JSON.stringify(prototypeTasks))
+  }, [prototypeTasks])
 
   useEffect(() => {
     Object.entries(analogTasks).forEach(([patentId, task]) => {
@@ -38,6 +49,12 @@ export function ReferenceProvider({ children }) {
     Object.entries(compareTasks).forEach(([patentId, task]) => {
       if (task.status === TASK_STATUS.RUNNING && !compareIntervalsRef.current[patentId]) {
         restoreComparePolling(patentId, task.taskId)
+      }
+    })
+
+    Object.entries(prototypeTasks).forEach(([patentId, task]) => {
+      if (task.status === TASK_STATUS.RUNNING && !prototypeIntervalsRef.current[patentId]) {
+        restorePrototypePolling(patentId, task.taskId)
       }
     })
   }, [])
@@ -140,6 +157,55 @@ export function ReferenceProvider({ children }) {
     }, 2000)
   }, [])
 
+  const restorePrototypePolling = useCallback((patentId, taskId) => {
+    prototypeIntervalsRef.current[patentId] = setInterval(async () => {
+      try {
+        const result = await referenceService.getPrototypeResult(taskId)
+
+        if (result.status === TASK_STATUS.SUCCESS) {
+          clearInterval(prototypeIntervalsRef.current[patentId])
+          delete prototypeIntervalsRef.current[patentId]
+
+          setPrototypeTasks(prev => ({
+            ...prev,
+            [patentId]: {
+              taskId,
+              status: TASK_STATUS.SUCCESS,
+              data: result.data,
+              error: null
+            }
+          }))
+        } else if (result.status === TASK_STATUS.FAILED || result.status === TASK_STATUS.CANCELLED) {
+          clearInterval(prototypeIntervalsRef.current[patentId])
+          delete prototypeIntervalsRef.current[patentId]
+
+          setPrototypeTasks(prev => ({
+            ...prev,
+            [patentId]: {
+              taskId,
+              status: result.status,
+              data: null,
+              error: result.message
+            }
+          }))
+        }
+      } catch (error) {
+        clearInterval(prototypeIntervalsRef.current[patentId])
+        delete prototypeIntervalsRef.current[patentId]
+
+        setPrototypeTasks(prev => ({
+          ...prev,
+          [patentId]: {
+            taskId,
+            status: TASK_STATUS.FAILED,
+            data: null,
+            error: error.message
+          }
+        }))
+      }
+    }, 2000)
+  }, [])
+
   const startAnalogTask = useCallback(async (patentId) => {
     try {
       const createResponse = await referenceService.createAnalogLink(patentId)
@@ -212,6 +278,42 @@ export function ReferenceProvider({ children }) {
     }
   }, [restoreComparePolling])
 
+  const startPrototypeTask = useCallback(async (patentId) => {
+    try {
+      const createResponse = await referenceService.createPrototypeTask(patentId)
+      const taskId = createResponse.task_id
+
+      setPrototypeTasks(prev => ({
+        ...prev,
+        [patentId]: {
+          taskId,
+          status: TASK_STATUS.RUNNING,
+          data: null,
+          error: null
+        }
+      }))
+
+      if (prototypeIntervalsRef.current[patentId]) {
+        clearInterval(prototypeIntervalsRef.current[patentId])
+      }
+
+      restorePrototypePolling(patentId, taskId)
+
+      return taskId
+    } catch (error) {
+      setPrototypeTasks(prev => ({
+        ...prev,
+        [patentId]: {
+          taskId: null,
+          status: TASK_STATUS.FAILED,
+          data: null,
+          error: error.message
+        }
+      }))
+      throw error
+    }
+  }, [restorePrototypePolling])
+
   const getAnalogTask = useCallback((patentId) => {
     return analogTasks[patentId]
   }, [analogTasks])
@@ -219,6 +321,10 @@ export function ReferenceProvider({ children }) {
   const getCompareTask = useCallback((patentId) => {
     return compareTasks[patentId]
   }, [compareTasks])
+
+  const getPrototypeTask = useCallback((patentId) => {
+    return prototypeTasks[patentId]
+  }, [prototypeTasks])
 
   const clearAnalogTask = useCallback((patentId) => {
     if (analogIntervalsRef.current[patentId]) {
@@ -244,10 +350,23 @@ export function ReferenceProvider({ children }) {
     })
   }, [])
 
+  const clearPrototypeTask = useCallback((patentId) => {
+    if (prototypeIntervalsRef.current[patentId]) {
+      clearInterval(prototypeIntervalsRef.current[patentId])
+      delete prototypeIntervalsRef.current[patentId]
+    }
+    setPrototypeTasks(prev => {
+      const newTasks = { ...prev }
+      delete newTasks[patentId]
+      return newTasks
+    })
+  }, [])
+
   const clearTaskForPatent = useCallback((patentId) => {
     clearAnalogTask(patentId)
     clearCompareTask(patentId)
-  }, [clearAnalogTask, clearCompareTask])
+    clearPrototypeTask(patentId)
+  }, [clearAnalogTask, clearCompareTask, clearPrototypeTask])
 
   return (
     <ReferenceContext.Provider value={{ 
@@ -257,9 +376,13 @@ export function ReferenceProvider({ children }) {
       startCompareTask,
       getCompareTask,
       clearCompareTask,
+      startPrototypeTask,
+      getPrototypeTask,
+      clearPrototypeTask,
       clearTaskForPatent,  
       analogTasks,
-      compareTasks
+      compareTasks,
+      prototypeTasks
     }}>
       {children}
     </ReferenceContext.Provider>

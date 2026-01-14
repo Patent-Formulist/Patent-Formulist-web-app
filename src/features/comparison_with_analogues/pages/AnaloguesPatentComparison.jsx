@@ -78,57 +78,12 @@ const downloadExcel = (data, patentId) => {
   XLSX.writeFile(workbook, fileName)
 }
 
-const downloadFeaturesExcel = (analogFeatures, patentFeatures, fileName) => {
-  const headers = ['Номер', 'Признаки аналога', 'Признаки патента']
-  const rows = analogFeatures.map((analogFeature, idx) => [
-    idx + 1,
-    analogFeature,
-    patentFeatures[idx] || ''
-  ])
-
-  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
-  worksheet['!cols'] = [
-    { wch: 10 },
-    { wch: 60 },
-    { wch: 60 }
-  ]
-
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Признаки')
-  XLSX.writeFile(workbook, fileName)
-}
-
-const downloadAnalogsOnlyExcel = (analogFeatures, fileName) => {
-  const headers = ['Номер', 'Признаки аналога']
-  const rows = analogFeatures.map((feature, idx) => [idx + 1, feature])
-
-  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
-  worksheet['!cols'] = [{ wch: 10 }, { wch: 60 }]
-
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Признаки аналогов')
-  XLSX.writeFile(workbook, fileName)
-}
-
-const downloadPatentOnlyExcel = (patentFeatures, fileName) => {
-  const headers = ['Номер', 'Признаки патента']
-  const rows = patentFeatures.map((feature, idx) => [idx + 1, feature])
-
-  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
-  worksheet['!cols'] = [{ wch: 10 }, { wch: 60 }]
-
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Признаки патента')
-  XLSX.writeFile(workbook, fileName)
-}
-
 export default function AnaloguesPatentComparison() {
   const { id } = useParams()
   const { startCompareTask, getCompareTask } = useReference()
   const { showWarning, showSuccess } = useToast()
   
   const [confirmModalVisible, setConfirmModalVisible] = useState(false)
-  const [viewMode, setViewMode] = useState('table')
   
   const task = getCompareTask(id)
   const loading = task?.status === TASK_STATUS.RUNNING
@@ -170,71 +125,6 @@ export default function AnaloguesPatentComparison() {
 
     downloadExcel(comparisonData, id)
     showSuccess('Таблица сопоставления успешно скачана')
-  }
-
-  const handleGetFeatures = () => {
-    if (!isCompleted) {
-      showWarning('Сначала выполните сопоставление патента с аналогами')
-      return
-    }
-    setViewMode('features-menu')
-  }
-
-  const handleBackToTable = () => {
-    setViewMode('table')
-  }
-
-  const handleBackToFeaturesMenu = () => {
-    setViewMode('features-menu')
-  }
-
-  const handleShowAllFeatures = () => {
-    setViewMode('features-all')
-  }
-
-  const handleShowAnalogsFeatures = () => {
-    setViewMode('features-analogs')
-  }
-
-  const handleShowPatentFeatures = () => {
-    setViewMode('features-patent')
-  }
-
-  const handleDownloadAllFeatures = () => {
-    if (!comparisonData?.analog_features || !comparisonData?.patent_features) {
-      showWarning('Данные признаков недоступны')
-      return
-    }
-    downloadFeaturesExcel(
-      comparisonData.analog_features,
-      comparisonData.patent_features,
-      `features_all_${id}_${new Date().toISOString().slice(0, 10)}.xlsx`
-    )
-    showSuccess('Признаки патента и аналогов успешно скачаны')
-  }
-
-  const handleDownloadAnalogsFeatures = () => {
-    if (!comparisonData?.analog_features) {
-      showWarning('Данные признаков аналогов недоступны')
-      return
-    }
-    downloadAnalogsOnlyExcel(
-      comparisonData.analog_features,
-      `features_analogs_${id}_${new Date().toISOString().slice(0, 10)}.xlsx`
-    )
-    showSuccess('Признаки аналогов успешно скачаны')
-  }
-
-  const handleDownloadPatentFeatures = () => {
-    if (!comparisonData?.patent_features) {
-      showWarning('Данные признаков патента недоступны')
-      return
-    }
-    downloadPatentOnlyExcel(
-      comparisonData.patent_features,
-      `features_patent_${id}_${new Date().toISOString().slice(0, 10)}.xlsx`
-    )
-    showSuccess('Признаки патента успешно скачаны')
   }
 
   const renderComparisonTable = () => {
@@ -295,195 +185,24 @@ export default function AnaloguesPatentComparison() {
     )
   }
 
-  const renderFeaturesAll = () => {
-    if (!comparisonData?.analog_features || !comparisonData?.patent_features) return null
-
-    return (
-      <div className={styles.tableWrapper}>
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th className={styles.numberHeader}>Номер</th>
-                <th className={styles.featureHeader}>Признаки аналога</th>
-                <th className={styles.featureHeader}>Признаки патента</th>
-              </tr>
-            </thead>
-            <tbody>
-              {comparisonData.analog_features.map((analogFeature, idx) => (
-                <tr key={idx}>
-                  <td className={styles.numberCell}>{idx + 1}</td>
-                  <td className={styles.featureCell}>{analogFeature}</td>
-                  <td className={styles.featureCell}>{comparisonData.patent_features[idx]}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )
-  }
-
-  const renderFeaturesAnalogs = () => {
-    if (!comparisonData?.analog_features) return null
-
-    return (
-      <div className={styles.tableWrapper}>
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th className={styles.numberHeader}>Номер</th>
-                <th className={styles.featureHeader}>Признаки аналога</th>
-              </tr>
-            </thead>
-            <tbody>
-              {comparisonData.analog_features.map((feature, idx) => (
-                <tr key={idx}>
-                  <td className={styles.numberCell}>{idx + 1}</td>
-                  <td className={styles.featureCell}>{feature}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )
-  }
-
-  const renderFeaturesPatent = () => {
-    if (!comparisonData?.patent_features) return null
-
-    return (
-      <div className={styles.tableWrapper}>
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th className={styles.numberHeader}>Номер</th>
-                <th className={styles.featureHeader}>Признаки патента</th>
-              </tr>
-            </thead>
-            <tbody>
-              {comparisonData.patent_features.map((feature, idx) => (
-                <tr key={idx}>
-                  <td className={styles.numberCell}>{idx + 1}</td>
-                  <td className={styles.featureCell}>{feature}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <>
       <div className={styles.container}>
-        {viewMode === 'table' && (
-          <div className={styles.buttonContainer}>
-            <button 
-              className={`${styles.actionButton} ${loading ? styles.loading : ''} ${isCompleted ? styles.completed : ''}`}
-              onClick={handleCompare}
-              disabled={loading}
-            >
-              Сопоставить патент с аналогами
-            </button>
-            <button 
-              className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
-              onClick={handleDownload}
-            >
-              Скачать таблицу сопоставления
-            </button>
-            <button 
-              className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
-              onClick={handleGetFeatures}
-            >
-              Получить признаки патента и аналогов
-            </button>
-          </div>
-        )}
-
-        {viewMode === 'features-menu' && (
-          <div className={styles.buttonContainer}>
-            <button 
-              className={styles.actionButton}
-              onClick={handleBackToTable}
-            >
-              Назад
-            </button>
-            <button 
-              className={styles.actionButton}
-              onClick={handleShowAllFeatures}
-            >
-              Признаки патента и аналогов
-            </button>
-            <button 
-              className={styles.actionButton}
-              onClick={handleShowAnalogsFeatures}
-            >
-              Признаки аналогов
-            </button>
-            <button 
-              className={styles.actionButton}
-              onClick={handleShowPatentFeatures}
-            >
-              Признаки патента
-            </button>
-          </div>
-        )}
-
-        {viewMode === 'features-all' && (
-          <div className={styles.buttonContainer}>
-            <button 
-              className={styles.actionButton}
-              onClick={handleBackToFeaturesMenu}
-            >
-              Назад
-            </button>
-            <button 
-              className={styles.actionButton}
-              onClick={handleDownloadAllFeatures}
-            >
-              Скачать признаки
-            </button>
-          </div>
-        )}
-
-        {viewMode === 'features-analogs' && (
-          <div className={styles.buttonContainer}>
-            <button 
-              className={styles.actionButton}
-              onClick={handleBackToFeaturesMenu}
-            >
-              Назад
-            </button>
-            <button 
-              className={styles.actionButton}
-              onClick={handleDownloadAnalogsFeatures}
-            >
-              Скачать признаки
-            </button>
-          </div>
-        )}
-
-        {viewMode === 'features-patent' && (
-          <div className={styles.buttonContainer}>
-            <button 
-              className={styles.actionButton}
-              onClick={handleBackToFeaturesMenu}
-            >
-              Назад
-            </button>
-            <button 
-              className={styles.actionButton}
-              onClick={handleDownloadPatentFeatures}
-            >
-              Скачать признаки
-            </button>
-          </div>
-        )}
+        <div className={styles.buttonContainer}>
+          <button 
+            className={`${styles.actionButton} ${loading ? styles.loading : ''} ${isCompleted ? styles.completed : ''}`}
+            onClick={handleCompare}
+            disabled={loading}
+          >
+            Сопоставить патент с аналогами
+          </button>
+          <button 
+            className={`${styles.actionButton} ${!isCompleted ? styles.inactive : ''}`}
+            onClick={handleDownload}
+          >
+            Скачать таблицу сопоставления
+          </button>
+        </div>
 
         {error && (
           <div className={styles.error}>
@@ -491,10 +210,7 @@ export default function AnaloguesPatentComparison() {
           </div>
         )}
 
-        {comparisonData && viewMode === 'table' && renderComparisonTable()}
-        {comparisonData && viewMode === 'features-all' && renderFeaturesAll()}
-        {comparisonData && viewMode === 'features-analogs' && renderFeaturesAnalogs()}
-        {comparisonData && viewMode === 'features-patent' && renderFeaturesPatent()}
+        {comparisonData && renderComparisonTable()}
       </div>
 
       {confirmModalVisible && createPortal(

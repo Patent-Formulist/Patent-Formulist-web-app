@@ -26,6 +26,7 @@ import PatentEdit from './features/patent_edit/pages/PatentEdit'
 
 import Analogues from './features/get_analogues/pages/Analogues'
 import AnaloguesPatentComparison from './features/comparison_with_analogues/pages/AnaloguesPatentComparison'
+import Prototype from './features/prototype/pages/Prototype'
 
 import ProfileMain from './features/profile/pages/ProfileMain'
 import ProfileSettings from './features/profile/pages/ProfileSettings'
@@ -58,7 +59,7 @@ export default function App() {
                 <Route path='patents/:id' element={<ReferenceLayout />}>
                   <Route path='analogs' element={<Analogues />} />
                   <Route path='attributes' element={<AnaloguesPatentComparison />} />
-                  <Route path='prototype' element={<div>Прототип</div>} />
+                  <Route path='prototype' element={<Prototype />} />
                 </Route>
               </Route>
               <Route path="/profile" element={<ProfileLayout />}>

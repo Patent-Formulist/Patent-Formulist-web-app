@@ -11,7 +11,7 @@ export default function PatentAnalogLayout() {
   const navigate = useNavigate()
   const location = useLocation()
   const { showWarning } = useToast()
-  const { getTask, getCompareTask } = useReference()
+  const { getTask, getCompareTask, getPrototypeTask } = useReference()
   
   const [patent, setPatent] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -19,11 +19,14 @@ export default function PatentAnalogLayout() {
 
   const analogTask = getTask(id)
   const compareTask = getCompareTask(id)
+  const prototypeTask = getPrototypeTask(id)
   
   const isAnalogsCompleted = analogTask?.status === TASK_STATUS.SUCCESS && analogTask?.data
   const isCompareCompleted = compareTask?.status === TASK_STATUS.SUCCESS && compareTask?.data
+  const isPrototypeCompleted = prototypeTask?.status === TASK_STATUS.SUCCESS && prototypeTask?.data
   const isAnalogsRunning = analogTask?.status === TASK_STATUS.RUNNING
   const isCompareRunning = compareTask?.status === TASK_STATUS.RUNNING
+  const isPrototypeRunning = prototypeTask?.status === TASK_STATUS.RUNNING
 
   useEffect(() => {
     let isMounted = true
@@ -91,7 +94,7 @@ export default function PatentAnalogLayout() {
           Сопоставление с аналогами
         </button>
         <button 
-          className={`${styles.actionButton} ${isActive('/prototype') ? styles.activeButton : ''} ${!isCompareCompleted ? styles.inactiveButton : ''}`}
+          className={`${styles.actionButton} ${isActive('/prototype') ? styles.activeButton : ''} ${!isCompareCompleted ? styles.inactiveButton : ''} ${isPrototypeRunning ? styles.loading : ''} ${isPrototypeCompleted ? styles.completed : ''}`}
           onClick={() => handleNavigate('/prototype')}
         >
           Выявление прототипа
